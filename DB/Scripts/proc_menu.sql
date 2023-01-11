@@ -22,7 +22,11 @@ BEGIN
 
 	IF @flag = 'getAll'
 	BEGIN
-		SELECT title, (SELECT title, link FROM SidebarSubMenu WHERE	ISNULL(isdeleted,'N')<>'Y' FOR JSON AUTO) AS submenus FROM SidebarMenu
+		SELECT 
+			SM.title
+			,(SELECT SSM.title, SSM.link FROM SidebarSubMenu SSM WHERE ISNULL(isdeleted,'N')<>'Y' AND SSM.parentId = SM.id FOR JSON AUTO) AS submenus
+			FROM SidebarMenu SM
+		WHERE ISNULL(isdeleted,'N') <> 'Y'
 		RETURN	
 	END
 
@@ -76,6 +80,28 @@ BEGIN
 		SELECT '0' errorCode, 'Menu Updated successfully' msg, null id
 		RETURN
 	END	
+
+	IF @flag = 'updateSubMenu'
+	BEGIN
+		IF EXISTS (SELECT 'X' FROM SidebarSubMenu WHERE title = @title AND ISNULL(isdeleted,'N') <> 'Y')
+		BEGIN
+			SELECT '1' errorCode, 'Sub Menu name already in use' msg, NULL id
+			RETURN
+		END
+
+		Update SidebarSubMenu SET
+			 title				= @title	
+			,details			= @details
+			,parentId			= @parentId
+			,link				= @link
+			,modifiedBy			= @user
+			,modifiedDate		= GETDATE()
+		WHERE id = @id
+		
+		SELECT '0' errorCode, 'Sub Menu Updated successfully' msg, null id
+		RETURN
+	END	
+
 	IF @flag = 'deleteMenu'
 	BEGIN
 		Update SidebarMenu Set
@@ -84,7 +110,19 @@ BEGIN
 			,modifiedDate		= GETDATE()
 		WHERE id = @id
 		
-		SELECT '0' errorCode, 'Menu Updated successfully' msg, null id
+		SELECT '0' errorCode, 'Menu Deleted successfully' msg, null id
+		RETURN
+	END	
+
+	IF @flag = 'deleteSubMenu'
+	BEGIN
+		Update SidebarSubMenu Set
+			 isdeleted			= 'Y'		
+			 ,modifiedBy		= @user
+			,modifiedDate		= GETDATE()
+		WHERE id = @id
+		
+		SELECT '0' errorCode, 'Sub Menu Deleted successfully' msg, null id
 		RETURN
 	END	
 END

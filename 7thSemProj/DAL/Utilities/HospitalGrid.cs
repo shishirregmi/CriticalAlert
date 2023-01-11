@@ -62,8 +62,8 @@ namespace DAL.Utilities
                             if (allowEdit)
                             {
                                 sb.AppendLine("<td>");
-                                sb.AppendLine("<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i>Delete</a>");
-                                sb.AppendLine("<a title='Edit' href='Edit?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-trash fa-w-16 fa-1x'></i>Edit</a>");
+                                sb.AppendLine("<a title='Edit' href='Edit?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
+                                sb.AppendLine("&nbsp&nbsp<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i></a>");
                                 sb.AppendLine("</td>");
                             }
                             sb.AppendLine("</tr>");
