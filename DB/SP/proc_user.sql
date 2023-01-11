@@ -97,7 +97,7 @@ SET XACT_ABORT ON
 			END		
 		BEGIN TRANSACTION
 
-		Update Users Set
+		Update Users SET 
 			fullname			= @fullname	
 			,email				= @email		
 			,username			= @username	

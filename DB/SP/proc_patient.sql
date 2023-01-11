@@ -5,7 +5,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[proc_doctor] (
+ALTER PROCEDURE [dbo].[proc_patient] (
 		 @id				INT				= NULL
 		,@fullname			VARCHAR(150)	= NULL
 		,@phone				VARCHAR(100)	= NULL
@@ -27,39 +27,39 @@ SET XACT_ABORT ON
 	IF @flag='s'
 	BEGIN
 			SELECT 'ID' id, 'Full Name' fullname, 'Phone Number' phone, 'Created By' createdBy, 'Created Date' createdDate ,'Modified By' modifiedBy, 'Modified Date' modifiedDate
-			
+
 			SELECT id, fullname, phone, createdBy, createdDate ,modifiedBy, modifiedDate
-			FROM Doctors WITH(NOLOCK) WHERE ISNULL(isdeleted,'N') <> 'Y' AND ISNULL(isactive,'Y') <> 'N'
+			FROM Patients WITH(NOLOCK) WHERE ISNULL(isdeleted,'N') <> 'Y' AND ISNULL(isactive,'Y') <> 'N'
 	END
 
 	IF @flag = 'i'
 	BEGIN
-		IF EXISTS (SELECT 'X' FROM Doctors WITH(NOLOCK) WHERE phone = @phone)
+		IF EXISTS (SELECT 'X' FROM Patients WITH(NOLOCK) WHERE phone = @phone)
 			BEGIN
 				SELECT '1' errorCode, 'Phone Number already in use' msg, NULL id
 				RETURN
 			END		
 		BEGIN TRANSACTION
 
-		INSERT INTO Doctors(fullname, phone, isactive, isdeleted, createdBy, createdDate)
+		INSERT INTO Patients(fullname, phone, isactive, isdeleted, createdBy, createdDate)
 		VALUES(@fullname,@phone,'Y','N',@User,GETDATE())
 
 		COMMIT TRANSACTION
 
-		SELECT '0' errorCode, 'Doctor registered successfully' msg, SCOPE_IDENTITY() id
+		SELECT '0' errorCode, 'Patient registered successfully' msg, SCOPE_IDENTITY() id
 		RETURN
 	END
 
 	IF @flag = 'u'
 	BEGIN
-		IF EXISTS (SELECT 'X' FROM Doctors WITH(NOLOCK) WHERE phone = @phone AND id <> @id)
+		IF EXISTS (SELECT 'X' FROM Patients WITH(NOLOCK) WHERE phone = @phone AND id <> @id)
 			BEGIN
 				SELECT '1' errorCode, 'Phone Number already in use' msg, NULL id
 				RETURN
 			END		
 		BEGIN TRANSACTION
 
-		UPDATE Doctors Set
+		UPDATE Patients SET 
 			 fullname			= @fullname	
 			,phone				= @phone		
 			,isactive			= @isactive		
@@ -67,7 +67,7 @@ SET XACT_ABORT ON
 			,modifiedDate		= GETDATE()
 		WHERE id = @id AND ISNULL(isdeleted,'N') <> 'Y'
 		COMMIT TRANSACTION
-		SELECT '0' errorCode, 'Doctor Updated successfully' msg, null id
+		SELECT '0' errorCode, 'Patient Updated successfully' msg, null id
 		RETURN
 	END
 
@@ -75,13 +75,13 @@ SET XACT_ABORT ON
 	BEGIN
 		BEGIN TRANSACTION
 
-		UPDATE Doctors SET 
+		UPDATE Patients SET 
 			 isdeleted			= 'Y'	
 			,modifiedBy			= @user	
 			,modifiedDate		= GETDATE()
 		WHERE id = @id AND ISNULL(isdeleted,'N') <> 'Y'
 		COMMIT TRANSACTION
-		SELECT '0' errorCode, 'Doctor Deleted successfully' msg, null id
+		SELECT '0' errorCode, 'Patient Deleted successfully' msg, null id
 		RETURN
 	END
 

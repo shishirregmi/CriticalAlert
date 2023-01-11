@@ -65,7 +65,7 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/Default" runat="server" class="nav-link">Home</a>
+                    <a href="/Home" runat="server" class="nav-link">Home</a>
                 </li>
             </ul>
 
@@ -92,7 +92,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="/Default" runat="server" class="brand-link">
+            <a href="/Home" runat="server" class="brand-link">
                 <img src='<%=ResolveClientUrl("dist/img/AdminLTELogo.png")%>' alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Proj</span>
             </a>
@@ -122,92 +122,7 @@
                 </div>
 
                 <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                        <li class="nav-item" id="nav_vendor" runat="server">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-briefcase"></i>
-                                <p>
-                                    Vendor
-                                <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href='<%=ResolveClientUrl("/Vendor/List")%>' class="nav-link">
-                                        <i class="fa fa-list nav-icon"></i>
-                                        <p>Vendor List</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href='<%=ResolveClientUrl("/Vendor/Add")%>' class="nav-link">
-                                        <i class="fa fa-plus nav-icon"></i>
-                                        <p>Add Vendor</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item" id="nav_product" runat="server">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-laptop"></i>
-                                <p>Product<i class="right fas fa-angle-left"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href='<%=ResolveClientUrl("/Default")%>' class="nav-link">
-                                        <i class="fa fa-list nav-icon"></i>
-                                        <p>Product List</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href='<%=ResolveClientUrl("/Products/Add")%>' class="nav-link">
-                                        <i class="fa fa-plus nav-icon"></i>
-                                        <p>Add Product</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item" id="admin_register" runat="server">
-                            <a href='<%=ResolveClientUrl("/Admin/Register")%>' class="nav-link">
-                                <i class="nav-icon fa fa-user"></i>
-                                <p>Register Admin</p>
-                            </a>
-                        </li>
-                        <li class="nav-item" id="orders" runat="server">
-                            <a href='<%=ResolveClientUrl("/Cart/Orders")%>' class="nav-link">
-                                <i class="nav-icon fa fa-cart-arrow-down"></i>
-                                <p>Check Orders</p>
-                            </a>
-                        </li>    
-                        <li class="nav-item" id="delivery" runat="server">
-                            <a href='<%=ResolveClientUrl("/Delivery/List")%>' class="nav-link">
-                                <i class="nav-icon fa fa-truck"></i>
-                                <p>Check Deliveries</p>
-                            </a>
-                        </li>   
-                        <li class="nav-item" id="dailyreport" runat="server">
-                            <a href='<%=ResolveClientUrl("/Report")%>' class="nav-link">
-                                <i class="nav-icon fa fa-chart-line"></i>
-                                <p>Report</p>
-                            </a>
-                        </li>
-                        <li class="nav-item" id="filterreport" runat="server">
-                            <a href='<%=ResolveClientUrl("/FilterReport")%>' class="nav-link">
-                                <i class="nav-icon fa fa-list-alt"></i>
-                                <p>Filtered Report</p>
-                            </a>
-                        </li>
-                        <li class="nav-item" id="apilog" runat="server">
-                            <a href='<%=ResolveClientUrl("/log/list")%>' class="nav-link">
-                                <i class="nav-icon fa fa-list-alt"></i>
-                                <p>Api Request Logs</p>
-                            </a>
-                        </li>
-
-
-                    </ul>
+                <nav class="mt-2" id="dynamicMenu" runat="server">                   
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
