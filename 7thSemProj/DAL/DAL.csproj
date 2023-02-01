@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Common\PostReq.cs" />
     <Compile Include="Common\UserDetails.cs" />
+    <Compile Include="Ref\Bed\BedDb.cs" />
     <Compile Include="Ref\Components\Menu\MenuDb.cs" />
     <Compile Include="Ref\Doctor\DoctorDb.cs" />
     <Compile Include="Ref\Patient\PatientDb.cs" />

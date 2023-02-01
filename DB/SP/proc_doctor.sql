@@ -13,8 +13,6 @@ ALTER PROCEDURE [dbo].[proc_doctor] (
 		,@isactive			VARCHAR(100)	= NULL	
 
 		,@user				VARCHAR(75)		= NULL
-		,@createdDate		VARCHAR(10)		= NULL
-		,@modifiedDate		VARCHAR(100)	= NULL
 
 		,@flag				NVARCHAR(50)	= NULL
 		,@errorCode			VARCHAR(1)		= NULL

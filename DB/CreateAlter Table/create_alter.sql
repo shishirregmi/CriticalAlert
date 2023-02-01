@@ -98,6 +98,7 @@ CREATE TABLE Room
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,capacity INT
+	,roomType INT
 	,isdeleted CHAR(1)
 	,createdBy VARCHAR(75)
 	,createdDate DATETIME
