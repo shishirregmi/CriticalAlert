@@ -12,10 +12,17 @@ namespace DAL.Ref.Doctor
             sql += "  @flag = 's'";
             return ExecuteDataset(sql);
         }
+        public DataSet GetDoctor(string id)
+        {
+            var sql = " EXEC proc_doctor";
+            sql += "  @flag = 'a'";
+            sql += ", @id = " + FilterString(id);
+            return ExecuteDataset(sql);
+        }
         public DbResult Save(DoctorDetails docReq, DoctorAddress docAddReq, string xml)
         {
             var sql = "EXEC proc_doctor";
-            sql += "  @flag = 'i'";
+            sql += "  @flag=" + (docReq.id.Equals("0") ? "'i'" : "'u'");
             sql += ", @user = " + FilterString(docReq.user);
             sql += ", @fullname = " + FilterString(docReq.fullname);
             sql += ", @phone = " + FilterString(docReq.phone);

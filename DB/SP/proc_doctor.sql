@@ -64,7 +64,7 @@ SET XACT_ABORT ON
 		VALUES (@province, @district, @street, @doctor, 'N', @user, GETDATE());
 
 		INSERT INTO DoctorQualifications (title, details, college, doctor, isdeleted, createdBy, createdDate)
-		SELECT p.title, p.details, p.college, @doctor, 'N', @user, GETDATE() FROM #TEMP p
+		SELECT p.title, p.details, p.college, @doctor, 'N', @user, GETDATE() FROM #TEMP p WITH(NOLOCK)
 
 		COMMIT TRANSACTION
 
@@ -88,6 +88,33 @@ SET XACT_ABORT ON
 			,modifiedBy			= @user	
 			,modifiedDate		= GETDATE()
 		WHERE id = @id AND ISNULL(isdeleted,'N') <> 'Y'
+
+		UPDATE DoctorAddress SET 
+			province = @province
+			,district = @district
+			,street = @street
+			,modifiedBy = @user
+			,modifiedDate = GETDATE()
+		WHERE doctor = @id;
+
+		SET @ixml = @qualification
+		SELECT
+			detailId = t.r.value('(detailId/text())[1]', 'INT'),
+			title = t.r.value('(title/text())[1]', 'VARCHAR(50)'),
+			details = t.r.value('(details/text())[1]', 'VARCHAR(50)'),
+			college = t.r.value('(college/text())[1]', 'VARCHAR(50)')
+		INTO #TEMPU 
+		FROM @ixml.nodes('/ArrayOfDoctorQualification/DoctorQualification') AS t(r)		
+
+		UPDATE DoctorQualifications SET 
+			isdeleted = 'Y'
+			,modifiedBy = @user
+			,modifiedDate = GETDATE()
+		WHERE doctor = @id;
+
+		INSERT INTO DoctorQualifications (title, details, college, doctor, isdeleted, createdBy, createdDate)
+		SELECT p.title, p.details, p.college, @id, 'N', @user, GETDATE() FROM #TEMPU p WITH(NOLOCK)
+
 		COMMIT TRANSACTION
 		SELECT '0' errorCode, 'Doctor Updated successfully' msg, null id
 		RETURN
@@ -107,16 +134,14 @@ SET XACT_ABORT ON
 		RETURN
 	END
 
-	IF @flag = 'getdoctor'
+	IF @flag = 'a'
 	BEGIN
-		SELECT USR.id
-			,USR.fullname
-			,USR.email
-			,ENM.enumDetails AS userRole
-		FROM Users USR WITH(NOLOCK)
-		LEFT JOIN EnumCollections ENM ON ENM.enumValue = USR.userRole
-		WHERE USR.id = @id AND ISNULL(USR.isdeleted,'N') <> 'Y'
-		
+		SELECT d.fullname, d.phone, da.province, da.district, da.street 
+		FROM Doctors d WITH(NOLOCK) 
+		LEFT JOIN DoctorAddress da WITH(NOLOCK) ON da.doctor = d.id
+		WHERE d.id=@id
+		SELECT dq.title, dq.details, dq.college FROM DoctorQualifications dq WITH(NOLOCK)
+		WHERE dq.doctor = @id AND ISNULL(dq.isdeleted,'N') <> 'Y'
 		RETURN
 	END
 

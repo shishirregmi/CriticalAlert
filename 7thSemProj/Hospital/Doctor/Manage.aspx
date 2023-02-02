@@ -7,11 +7,6 @@
             flex-direction: row;
         }
 
-            .Slab .form-group {
-                margin-right: 5px;
-                width: 15vw;
-            }
-
         .addbtn img {
             margin-top: 7px;
             width: 20px;
@@ -29,6 +24,11 @@
             border-width: 1px;
             border-color: red;
             border-radius: 3px;
+        }
+
+        .Slab .form-group {
+            margin-right: 5px;
+            width: 15vw;
         }
     </style>
 </asp:Content>
@@ -124,6 +124,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="script" runat="server">
     <script>
