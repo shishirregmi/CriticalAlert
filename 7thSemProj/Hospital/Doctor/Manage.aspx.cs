@@ -1,4 +1,6 @@
-﻿using DAL.Ref.Doctor;
+﻿using DAL.Common;
+using DAL.DAL;
+using DAL.Ref.Doctor;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,10 +24,10 @@ namespace Hospital.Doctor
                 Response.Redirect("/Default");
             }
             if (!IsPostBack)
-            {
-                string method = Request.Form["Method"].ToString();
-                if (!string.IsNullOrEmpty(method))
+            {                
+                if (Request.Form.HasKeys())
                 {
+                    string method = Request.Form["Method"].ToString();
                     switch (method)
                     {
                         case "SaveData":
@@ -40,12 +42,20 @@ namespace Hospital.Doctor
         private void LoadData()
         {
             var res = _dao.GetDoctors();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Doctors", true, true);
+            //rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Doctors", true, true);
         }
         private void SaveData()
         {
-            var detail = Request.Form["Data"];            var Name = Request.Form["Name"];            var ChargeDesc = Request.Form["ChargeDesc"];            var ChargeType = Request.Form["ChargeType"];            var EffectiveFrom = Request.Form["EffectiveFrom"];            var EffectiveTo = Request.Form["EffectiveTo"];            var Active = Request.Form["Active"];            var User = GetStatic.GetUser();            List<ChargeConfiguration> chargeList = new JavaScriptSerializer().Deserialize<List<ChargeConfiguration>>(detail);            var chargeBasic = new ChargeConfiguration            {                DetailId = Request.Form["DetailId"],                ChargingCondition = Request.Form["ChargingCondition"],                ChargeValue = Request.Form["ChargeValue"],                MinAmt = Request.Form["MinAmt"],                MaxAmt = Request.Form["MaxAmt"],                ToAmt = Request.Form["ToAmt"],                FromAmt = Request.Form["FromAmt"],            };            string ObjectToXML(object input)            {                try                {                    var stringwriter = new System.IO.StringWriter();                    var serializer = new XmlSerializer(input.GetType());                    serializer.Serialize(stringwriter, input);                    return stringwriter.ToString();                }                catch (Exception ex)                {                    if (ex.InnerException != null)                        ex = ex.InnerException;                    return "Could not convert: " + ex.Message;                }            }            string xml = ObjectToXML(chargeList);            DbResult dr = obj.SaveFlexible(User, GetId().ToString(), Name, ChargeDesc, ChargeType, EffectiveFrom, EffectiveTo, isActive, xml);            if (dr.ErrorCode == "0")            {
-                GetStatic.SetMessage(dr);            }            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
+            var fullname = Request.Form["fullname"];            var mobile = Request.Form["mobile"];            var province = Request.Form["province"];            var district = Request.Form["district"];            var street = Request.Form["street"];            var qualification = Request.Form["qualification"];            var user = Session["username"].ToString();            List<DoctorQualification> qual = new JavaScriptSerializer().Deserialize<List<DoctorQualification>>(qualification);            var docReq = new DoctorDetails            {
+                fullname = fullname,
+                phone = mobile,
+                user = user,
+            };            var docAddReq = new DoctorAddress            {
+                province = province,
+                district = district,
+                street = street,
+                user = user
+            };            string ObjectToXML(object input)            {                try                {                    var stringwriter = new System.IO.StringWriter();                    var serializer = new XmlSerializer(input.GetType());                    serializer.Serialize(stringwriter, input);                    return stringwriter.ToString();                }                catch (Exception ex)                {                    if (ex.InnerException != null)                        ex = ex.InnerException;                    return "Could not convert: " + ex.Message;                }            }            string xml = ObjectToXML(qual);            DbResult dr = _dao.Save(docReq,docAddReq,xml);            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
         }
     }
 }

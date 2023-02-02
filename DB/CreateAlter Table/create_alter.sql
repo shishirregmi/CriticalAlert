@@ -56,10 +56,10 @@ CREATE TABLE DoctorQualifications
 CREATE TABLE DoctorAddress
 (
 	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
-	,province INT
-	,district INT
+	,province VARCHAR(75)
+	,district VARCHAR(75)
 	,street VARCHAR(150)
-	,doctor INT
+	,doctor VARCHAR(75)
 	,isdeleted CHAR(1)
 	,createdBy VARCHAR(75)
 	,createdDate DATETIME

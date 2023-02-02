@@ -16,10 +16,8 @@ ALTER PROCEDURE [dbo].[proc_doctor] (
 		,@street			VARCHAR(100)	= NULL
 		,@doctor			VARCHAR(100)	= NULL	
 		
-		,@title				VARCHAR(100)	= NULL
-		,@details			VARCHAR(100)	= NULL
-		,@college			VARCHAR(100)	= NULL
-
+		,@qualification		NVARCHAR(MAX)	= NULL
+		,@ixml				XML				= NULL
 		,@isdeleted			VARCHAR(75)		= NULL
 		,@isactive			VARCHAR(100)	= NULL	
 		,@user				VARCHAR(75)		= NULL
@@ -47,18 +45,26 @@ SET XACT_ABORT ON
 			SELECT '1' errorCode, 'Phone Number already in use' msg, NULL id
 			RETURN
 		END		
-		BEGIN TRANSACTION
+		BEGIN TRANSACTION		
 
 		INSERT INTO Doctors(fullname, phone, isactive, isdeleted, createdBy, createdDate)
 		VALUES(@fullname,@phone,'Y','N',@User,GETDATE())
 
 		SET @doctor = SCOPE_IDENTITY()
+		SET @ixml = @qualification
+		SELECT
+			detailId = t.r.value('(detailId/text())[1]', 'INT'),
+			title = t.r.value('(title/text())[1]', 'VARCHAR(50)'),
+			details = t.r.value('(details/text())[1]', 'VARCHAR(50)'),
+			college = t.r.value('(college/text())[1]', 'VARCHAR(50)')
+		INTO #TEMP
+		FROM @ixml.nodes('/ArrayOfDoctorQualification/DoctorQualification') AS t(r)		
 
 		INSERT INTO DoctorAddress (province, district, street, doctor, isdeleted, createdBy, createdDate)
 		VALUES (@province, @district, @street, @doctor, 'N', @user, GETDATE());
 
 		INSERT INTO DoctorQualifications (title, details, college, doctor, isdeleted, createdBy, createdDate)
-		VALUES (@title, @details, @college, @doctor, 'N', @user, GETDATE());
+		SELECT p.title, p.details, p.college, @doctor, 'N', @user, GETDATE() FROM #TEMP p
 
 		COMMIT TRANSACTION
 

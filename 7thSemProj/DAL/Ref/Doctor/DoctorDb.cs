@@ -12,6 +12,19 @@ namespace DAL.Ref.Doctor
             sql += "  @flag = 's'";
             return ExecuteDataset(sql);
         }
+        public DbResult Save(DoctorDetails docReq, DoctorAddress docAddReq, string xml)
+        {
+            var sql = "EXEC proc_doctor";
+            sql += "  @flag = 'i'";
+            sql += ", @user = " + FilterString(docReq.user);
+            sql += ", @fullname = " + FilterString(docReq.fullname);
+            sql += ", @phone = " + FilterString(docReq.phone);
+            sql += ", @province = " + FilterString(docAddReq.province);
+            sql += ", @district = " + FilterString(docAddReq.district);
+            sql += ", @street = " + FilterString(docAddReq.street);
+            sql += ", @qualification = " + FilterString(xml);
+            return ParseDbResult(sql);
+        }
         public DbResult Delete(PostReq request)
         {
             var sql = "EXEC proc_doctor";
