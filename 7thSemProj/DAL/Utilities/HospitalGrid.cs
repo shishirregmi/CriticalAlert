@@ -27,7 +27,7 @@ namespace DAL.Utilities
                     "<div class = \"d-flex flex-row flex-end\">");
                     if (allowAdd)
                     {
-                        sb.AppendLine("<a href=\"Add\" class = \"btn btn-primary\"> Add </a>");
+                        sb.AppendLine("<a href=\"Manage\" class = \"btn btn-primary\"> Add </a>");
                     }
                     sb.AppendLine("</div>" +
                     "</div>" +
@@ -62,7 +62,7 @@ namespace DAL.Utilities
                             if (allowEdit)
                             {
                                 sb.AppendLine("<td>");
-                                sb.AppendLine("<a title='Edit' href='Edit?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
+                                sb.AppendLine("<a title='Edit' href='Manage?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
                                 sb.AppendLine("&nbsp&nbsp<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i></a>");
                                 sb.AppendLine("</td>");
                             }

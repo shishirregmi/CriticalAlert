@@ -113,6 +113,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Doctor\List.aspx" />
+    <Content Include="Doctor\Manage.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -187,6 +188,13 @@
     </Compile>
     <Compile Include="Doctor\List.aspx.designer.cs">
       <DependentUpon>List.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Doctor\Manage.aspx.cs">
+      <DependentUpon>Manage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Doctor\Manage.aspx.designer.cs">
+      <DependentUpon>Manage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
