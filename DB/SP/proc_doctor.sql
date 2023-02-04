@@ -32,10 +32,12 @@ SET NOCOUNT ON;
 SET XACT_ABORT ON
 	IF @flag='s'
 	BEGIN
-		SELECT 'ID' id, 'Full Name' fullname, 'Phone Number' phone, 'Created By' createdBy, 'Created Date' createdDate ,'Modified By' modifiedBy, 'Modified Date' modifiedDate
+		SELECT 'ID' id, 'Full Name' fullname, 'Phone Number' phone,'Active Patient Count' patientCount, 'Created By' createdBy, 'Created Date' createdDate ,'Modified By' modifiedBy, 'Modified Date' modifiedDate
 			
-		SELECT id, fullname, phone, createdBy, createdDate ,modifiedBy, modifiedDate
-		FROM Doctors WITH(NOLOCK) WHERE ISNULL(isdeleted,'N') <> 'Y' AND ISNULL(isactive,'Y') <> 'N'
+		SELECT d.id, CONCAT('Dr. ',d.fullname) AS fullname, d.phone, 
+		(SELECT COUNT(id) FROM AdmitPatientMod apm WHERE apm.doctor = d.id AND ISNULL(isdeleted,'N') <> 'Y' AND ISNULL(apm.isactive, 'Y') <> 'N') AS patientCount,
+		d.createdBy, d.createdDate ,d.modifiedBy, d.modifiedDate		
+		FROM Doctors d WITH(NOLOCK) WHERE ISNULL(isdeleted,'N') <> 'Y' AND ISNULL(isactive,'Y') <> 'N'
 	END
 
 	IF @flag = 'i'

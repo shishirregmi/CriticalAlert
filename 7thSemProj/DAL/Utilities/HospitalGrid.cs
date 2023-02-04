@@ -9,7 +9,7 @@ namespace DAL.Utilities
 {
     public static class HospitalGrid
     {
-        public static string CreateGrid(DataSet ds, string title, bool allowAdd, bool allowEdit)
+        public static string CreateGrid(DataSet ds, string title, bool allowAdd, bool allowEdit, bool allowDelete, bool alllowApprove, bool allowView)
         {
             if (ds != null)
             {
@@ -41,7 +41,7 @@ namespace DAL.Utilities
                         if(dc!="ID")
                             sb.AppendLine("<th>" + dc + "</th>");
                     }
-                    if (allowEdit)
+                    if (allowEdit || allowDelete || alllowApprove || allowView)
                         sb.AppendLine("<th></th>");
                     sb.AppendLine("</tr>" +
                 "</thead>" +
@@ -59,11 +59,17 @@ namespace DAL.Utilities
                             {
                                 sb.AppendLine("<td>" + col + "</td>");
                             }
-                            if (allowEdit)
+                            if (allowEdit || allowDelete || alllowApprove || allowView)
                             {
                                 sb.AppendLine("<td>");
-                                sb.AppendLine("<a title='Edit' href='Manage?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
-                                sb.AppendLine("&nbsp&nbsp<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i></a>");
+                                if(allowEdit)
+                                  sb.AppendLine("<a title='Edit' href='Manage?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
+                                if(allowView)
+                                  sb.AppendLine("<a title='Edit' href='View?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-eye fa-w-16 fa-1x'></i></a>");
+                                if (allowDelete)
+                                    sb.AppendLine("&nbsp&nbsp<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i></a>");
+                                if (alllowApprove)
+                                    sb.AppendLine("&nbsp&nbsp<a title='Approve' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-success\"><i class='fa fa-check fa-w-16 fa-1x'></i></a>");
                                 sb.AppendLine("</td>");
                             }
                             sb.AppendLine("</tr>");
@@ -78,7 +84,7 @@ namespace DAL.Utilities
                             if (dc != "ID")
                                 sb.AppendLine("<th>" + dc + "</th>");
                         }
-                        if (allowEdit)
+                        if (allowEdit || allowDelete || alllowApprove || allowView)
                             sb.AppendLine("<th></th>");
                         sb.AppendLine("</tr>" +
                             "</tfoot>" +

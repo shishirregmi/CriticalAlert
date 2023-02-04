@@ -52,6 +52,10 @@
                                 <label for="mobile">Phone Number</label>
                                 <asp:TextBox runat="server" placeholder="Phone Number" required="true" Type="Number" class="form-control" ID="mobile"></asp:TextBox>
                             </div>
+                            <div class="form-group ">
+                                <label for="mobile">Gender</label>
+                                <asp:DropDownList ID="ddlGender" runat="server" required="true" class="form-control"></asp:DropDownList>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -87,12 +91,13 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="script" runat="server">
     <script>
-        var SaveAll = function () {            var res = confirm("Confirm To Save ?")            if (!res) {                return;            }            var fullname = $('#MainContent_fullname').val();            var mobile = $('#MainContent_mobile').val();            var province = $('#MainContent_province').val();            var district = $('#MainContent_district').val();            var street = $('#MainContent_street').val();            var detail = $.ajax({                type: "POST",
+        var SaveAll = function () {            var res = confirm("Confirm To Save ?")            if (!res) {                return;            }            var fullname = $('#MainContent_fullname').val();            var mobile = $('#MainContent_mobile').val();            var gender = $('#MainContent_ddlGender').val();            var province = $('#MainContent_province').val();            var district = $('#MainContent_district').val();            var street = $('#MainContent_street').val();            var detail = $.ajax({                type: "POST",
                 dataType: 'JSON',
                 data: {                    Method: "SaveData",                    fullname: fullname,
                     mobile: mobile,
+                    gender: gender,
                     province: province,
                     district: district,
-                    street: street,                },                success: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes == "0") {                            window.location = "List.aspx";                        }                        else {                            alert(response.Msg);                        }                    }                },                error: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes != "0") {                            alert(response.Msg);                        }                    }                }            });        }
+                    street: street,                },                success: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes == "0") {                            window.location = "/Management/Beds/Manage.aspx";                        }                        else {                            alert(response.Msg);                        }                    }                },                error: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes != "0") {                            alert(response.Msg);                        }                    }                }            });        }
     </script>
 </asp:Content>

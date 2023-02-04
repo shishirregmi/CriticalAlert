@@ -72,6 +72,8 @@ CREATE TABLE Patients
 	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,fullname VARCHAR(150)
 	,phone VARCHAR(20)
+	,gender INT
+	,isadmitted CHAR(1)
 	,isdeleted CHAR(1)
 	,isactive CHAR(1)
 	,createdBy VARCHAR(75)
@@ -79,7 +81,7 @@ CREATE TABLE Patients
 	,modifiedBy VARCHAR(75)
 	,modifiedDate DATETIME
 )
-
+                         
 CREATE TABLE PatientAddress
 (
 	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
@@ -110,6 +112,7 @@ CREATE TABLE Beds
 (
 	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,room INT
+	,inuse CHAR(1)
 	,isdeleted CHAR(1)
 	,createdBy VARCHAR(75)
 	,createdDate DATETIME
@@ -120,7 +123,22 @@ CREATE TABLE Beds
 CREATE TABLE AdmitPatient
 (
 	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
-	,room INT
+	,bed INT
+	,doctor INT
+	,patient INT
+	,[type] INT
+	,details VARCHAR(MAX)
+	,isdeleted CHAR(1)
+	,isactive CHAR(1)
+	,createdBy VARCHAR(75)
+	,createdDate DATETIME
+	,modifiedBy VARCHAR(75)
+	,modifiedDate DATETIME
+)
+
+CREATE TABLE AdmitPatientMod
+(
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,bed INT
 	,doctor INT
 	,patient INT

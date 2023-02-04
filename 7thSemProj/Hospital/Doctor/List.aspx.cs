@@ -48,7 +48,7 @@ namespace Hospital.Doctor
         private void LoadData()
         {
             var res = _dao.GetDoctors();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res,"Doctors",true,true);
+            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res,"Doctors",true,true,true,false,false);
         }
         private void deleteData(PostReq req)
         {

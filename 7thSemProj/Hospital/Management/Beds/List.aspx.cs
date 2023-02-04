@@ -50,12 +50,12 @@ namespace Hospital.Management.Beds
             {
                 var id = Request.QueryString["id"].ToString();
                 var res = _dao.GetAllBed(id);
-                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Bed List for room " + id, true, true);
+                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Appointed Patient List for Room " + id, true, false, false, true, true);
             }
             else
             {
                 var res = _dao.GetAllBed();
-                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Bed List", true, true);
+                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Appointed Patient List", true, false, false, true, true);
             }
         }
         private void deleteData(PostReq req)

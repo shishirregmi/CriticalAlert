@@ -53,7 +53,7 @@ namespace DAL.DAL
                 if (cto == 0)
                     cto = 30;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 cto = 30;
             }
@@ -309,8 +309,6 @@ namespace DAL.DAL
         {
             return ParseDbResult(ExecuteDataset(sql).Tables[0]);
         }
-
-
 
         public string AutoSelect(string str1, string str2)
         {

@@ -9,8 +9,7 @@ ALTER PROCEDURE [dbo].[proc_patient] (
 		 @id				INT				= NULL
 		,@fullname			VARCHAR(150)	= NULL
 		,@phone				VARCHAR(100)	= NULL
-		,@isdeleted			VARCHAR(75)		= NULL
-		,@isactive			VARCHAR(100)	= NULL	
+		,@gender			VARCHAR(75)		= NULL	
 
 		,@province			VARCHAR(100)	= NULL
 		,@district			VARCHAR(100)	= NULL
@@ -29,10 +28,12 @@ SET NOCOUNT ON;
 SET XACT_ABORT ON
 	IF @flag='s'
 	BEGIN
-			SELECT 'ID' id, 'Full Name' fullname, 'Phone Number' phone, 'Created By' createdBy, 'Created Date' createdDate ,'Modified By' modifiedBy, 'Modified Date' modifiedDate
+			SELECT 'ID' id, 'Full Name' fullname, 'Phone Number' phone, 'Gender' gender, 'Created By' createdBy, 'Created Date' createdDate ,'Modified By' modifiedBy, 'Modified Date' modifiedDate
 
-			SELECT id, fullname, phone, createdBy, createdDate ,modifiedBy, modifiedDate
-			FROM Patients WITH(NOLOCK) WHERE ISNULL(isdeleted,'N') <> 'Y' AND ISNULL(isactive,'Y') <> 'N'
+			SELECT p.id, p.fullname, p.phone, ec.enumDetails AS gender, p.createdBy, p.createdDate , p.modifiedBy, p.modifiedDate
+			FROM Patients p WITH(NOLOCK)
+			LEFT JOIN EnumCollections ec ON ec.enumValue = p.gender
+			WHERE ISNULL(p.isdeleted,'N') <> 'Y' AND ISNULL(p.isactive,'Y') <> 'N'
 	END
 
 	IF @flag = 'i'
@@ -44,8 +45,8 @@ SET XACT_ABORT ON
 			END		
 		BEGIN TRANSACTION
 
-		INSERT INTO Patients(fullname, phone, isactive, isdeleted, createdBy, createdDate)
-		VALUES(@fullname,@phone,'Y','N',@User,GETDATE())
+		INSERT INTO Patients(fullname, phone, gender, isactive, isdeleted, createdBy, createdDate)
+		VALUES(@fullname,@phone, @gender,'Y','N',@User,GETDATE())
 
 		SET @patient = SCOPE_IDENTITY()
 
@@ -69,8 +70,8 @@ SET XACT_ABORT ON
 
 		UPDATE Patients SET 
 			 fullname			= @fullname	
-			,phone				= @phone		
-			,isactive			= @isactive		
+			,phone				= @phone	
+			,gender				= @gender	
 			,modifiedBy			= @user	
 			,modifiedDate		= GETDATE()
 		WHERE id = @id AND ISNULL(isdeleted,'N') <> 'Y'
@@ -104,7 +105,7 @@ SET XACT_ABORT ON
 
 	IF @flag = 'a'
 	BEGIN
-		SELECT p.fullname, p.phone, pa.province, pa.district, pa.street 
+		SELECT p.fullname, p.phone, pa.province, pa.district, pa.street, p.gender
 		FROM Patients p WITH(NOLOCK) 
 		LEFT JOIN PatientAddress pa WITH(NOLOCK) ON pa.patient = p.id
 		WHERE p.id=@id		

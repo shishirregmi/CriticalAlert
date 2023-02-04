@@ -22,6 +22,7 @@
         .flex-end {
             justify-content: end;
         }
+        
     </style>
 
     <!-- Google Font: Source Sans Pro -->

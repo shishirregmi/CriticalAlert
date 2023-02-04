@@ -49,17 +49,23 @@ SET XACT_ABORT ON
 			 'ID' id
 			,'Room Number' room
 			,'Room Type' roomType
-			
+			,'Patient Name' patient
+			,'Doctor Name' doctor
 		IF @id IS NULL
 		BEGIN  
 			SELECT 
-				 B.id AS id
-				,B.room AS room
-				,Ec.enumDetails AS roomType
-			FROM Beds B WITH(NOLOCK)
-			LEFT JOIN Room R ON R.id = B.room	
-			LEFT JOIN EnumCollections EC ON R.roomType = EC.enumValue
-			WHERE ISNULL(R.isdeleted,'N') <> 'Y'        
+				 b.id AS id
+				,CONCAT(CAST(b.room AS VARCHAR(10)),CONCAT('-',CAST(b.id AS VARCHAR(10)))) AS room
+				,ec.enumDetails AS roomType               
+				,p.fullname AS patient
+				,d.fullname AS doctor
+			FROM Beds b WITH(NOLOCK)
+			LEFT JOIN Room r ON r.id = b.room	
+			LEFT JOIN EnumCollections ec ON R.roomType = ec.enumValue
+			LEFT JOIN AdmitPatientMod apm ON apm.bed = b.id
+			LEFT JOIN Patients p ON p.id = apm.patient
+			LEFT JOIN Doctors d ON d.id = apm.doctor
+			WHERE ISNULL(b.isdeleted,'N') <> 'Y' AND ISNULL(b.inuse,'Y') <> 'N'
 			
 			RETURN
         END
@@ -92,10 +98,10 @@ SET XACT_ABORT ON
 
 		DECLARE @i INT = 0;
 		SET @room = SCOPE_IDENTITY()
-		WHILE @i <= @capacity
+		WHILE @i < @capacity
 		BEGIN
-			INSERT INTO Beds (room, isdeleted, createdBy, createdDate)
-			VALUES (@room, 'N', @user, GETDATE());
+			INSERT INTO Beds (room, inuse, isdeleted, createdBy, createdDate)
+			VALUES (@room, 'N', 'N', @user, GETDATE());
 
 			SET @i = @i + 1;
 		END;

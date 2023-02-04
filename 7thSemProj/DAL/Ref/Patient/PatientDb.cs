@@ -35,6 +35,7 @@ namespace DAL.Ref.Patient
             sql += ", @user = " + FilterString(Req.user);
             sql += ", @fullname = " + FilterString(Req.fullname);
             sql += ", @phone = " + FilterString(Req.phone);
+            sql += ", @gender = " + FilterString(Req.gender);
             sql += ", @province = " + FilterString(AddReq.province);
             sql += ", @district = " + FilterString(AddReq.district);
             sql += ", @street = " + FilterString(AddReq.street);

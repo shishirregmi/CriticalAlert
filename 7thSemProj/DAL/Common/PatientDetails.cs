@@ -11,6 +11,7 @@ namespace DAL.Common
         public string id { get; set; }
         public string fullname { get; set; }
         public string phone { get; set; }
+        public string gender { get; set; }
         public string user { get; set; }
     }
     public class PatientAddress

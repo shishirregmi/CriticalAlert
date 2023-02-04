@@ -31,8 +31,8 @@ EXEC proc_menu
 			  ,@flag = 'addMenu'
 
 EXEC proc_menu 
-			  @title = 'Beds'
-			  ,@details = 'contains link of page to add/edit/view bed list'
+			  @title = 'Admitted Patients'
+			  ,@details = 'contains link of page to add/edit/view admitted patient list'
 			  ,@user = 'admin'
 			  ,@link = '/Management/Beds/List'
 			  ,@parentId = 2
@@ -45,3 +45,7 @@ EXEC proc_menu
 			  ,@link = '/Management/Rooms/List'
 			  ,@parentId = 2
 			  ,@flag = 'addSubMenu'
+
+
+
+			  
