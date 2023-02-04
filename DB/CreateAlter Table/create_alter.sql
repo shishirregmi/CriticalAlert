@@ -16,7 +16,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE EnumCollections (
-	enumValue INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	 enumValue INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,enumDetails VARCHAR(150)
 	,enumParent VARCHAR(100)
 	,isdeleted CHAR(1)
@@ -28,7 +28,7 @@ CREATE TABLE EnumCollections (
 
 CREATE TABLE Doctors
 (
-	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,fullname VARCHAR(150)
 	,phone VARCHAR(20)
 	,isdeleted CHAR(1)
@@ -55,11 +55,11 @@ CREATE TABLE DoctorQualifications
 
 CREATE TABLE DoctorAddress
 (
-	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,province VARCHAR(75)
 	,district VARCHAR(75)
 	,street VARCHAR(150)
-	,doctor VARCHAR(75)
+	,doctor INT
 	,isdeleted CHAR(1)
 	,createdBy VARCHAR(75)
 	,createdDate DATETIME
@@ -69,7 +69,7 @@ CREATE TABLE DoctorAddress
 
 CREATE TABLE Patients
 (
-	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,fullname VARCHAR(150)
 	,phone VARCHAR(20)
 	,isdeleted CHAR(1)
@@ -82,9 +82,9 @@ CREATE TABLE Patients
 
 CREATE TABLE PatientAddress
 (
-	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
-	,province INT
-	,district INT
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	,province VARCHAR(75)
+	,district VARCHAR(75)
 	,street VARCHAR(150)
 	,patient INT
 	,isdeleted CHAR(1)
@@ -96,7 +96,7 @@ CREATE TABLE PatientAddress
 
 CREATE TABLE Room
 (
-	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,capacity INT
 	,roomType INT
 	,isdeleted CHAR(1)
@@ -108,7 +108,7 @@ CREATE TABLE Room
 
 CREATE TABLE Beds
 (
-	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,room INT
 	,isdeleted CHAR(1)
 	,createdBy VARCHAR(75)
@@ -119,7 +119,7 @@ CREATE TABLE Beds
 
 CREATE TABLE AdmitPatient
 (
-	id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,room INT
 	,bed INT
 	,doctor INT
@@ -135,7 +135,7 @@ CREATE TABLE AdmitPatient
 )
 
 CREATE TABLE SidebarMenu(
-	id	INT NOT NULL PRIMARY KEY IDENTITY(1,1)
+	 id	INT NOT NULL PRIMARY KEY IDENTITY(1,1)
 	,title VARCHAR(80)
 	,details VARCHAR(500)
 	,isdeleted CHAR(1)
@@ -147,7 +147,7 @@ CREATE TABLE SidebarMenu(
 )
 
 CREATE TABLE SidebarSubMenu(
-	id	INT NOT NULL PRIMARY KEY IDENTITY(1,1)
+	 id	INT NOT NULL PRIMARY KEY IDENTITY(1,1)
 	,title VARCHAR(80)
 	,details VARCHAR(500)
 	,parentId INT

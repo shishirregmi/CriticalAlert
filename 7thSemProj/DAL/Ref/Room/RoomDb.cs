@@ -1,15 +1,10 @@
 ﻿using DAL.Common;
 using DAL.DAL;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DAL.Ref.Bed
+namespace DAL.Ref.Room
 {
-    public class BedDb : Dao
+    public class RoomDb : Dao
     {
         public DataSet GetAllRoom()
         {
@@ -22,6 +17,15 @@ namespace DAL.Ref.Bed
             sql += "  @flag = 'deleteRoom'";
             sql += ", @user = " + FilterString(request.user);
             sql += ", @id = " + FilterString(request.id);
+            return ParseDbResult(sql);
+        }
+        public DbResult AddRoom(RoomDetails request)
+        {
+            var sql = "EXEC proc_rooms";
+            sql += "  @flag = 'i'";
+            sql += ", @user = " + FilterString(request.user);
+            sql += ", @capacity = " + FilterString(request.capacity);
+            sql += ", @roomType = " + FilterString(request.roomType);
             return ParseDbResult(sql);
         }
         public DataSet GetAllBed()

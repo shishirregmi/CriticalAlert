@@ -26,13 +26,13 @@ SET XACT_ABORT ON
 	IF @flag = 'getAllRooms'
 	BEGIN
 		SELECT 
-			'ID' id
+			 'ID' id
 			,'Capacity' capacity	
 			,'Room Type' roomType
 			,'Bed Count' bedCount
 			
 		SELECT 
-			R.id AS id
+			 R.id AS id
 			,R.capacity AS capacity	
 			,Ec.enumDetails AS	roomType
 			,(SELECT COUNT(id) FROM Beds B WHERE B.room = R.id AND ISNULL(isdeleted,'N') <> 'Y') AS	bedCount
@@ -46,14 +46,14 @@ SET XACT_ABORT ON
 	IF @flag = 'getAllBeds'
 	BEGIN
 		SELECT 
-			'ID' id
+			 'ID' id
 			,'Room Number' room
 			,'Room Type' roomType
 			
 		IF @id IS NULL
 		BEGIN  
 			SELECT 
-				B.id AS id
+				 B.id AS id
 				,B.room AS room
 				,Ec.enumDetails AS roomType
 			FROM Beds B WITH(NOLOCK)
@@ -66,7 +66,7 @@ SET XACT_ABORT ON
 		ELSE
 		BEGIN
 			SELECT 
-				B.id AS id
+				 B.id AS id
 				,B.room AS room
 				,Ec.enumDetails AS roomType
 			FROM Beds B WITH(NOLOCK)
@@ -78,32 +78,8 @@ SET XACT_ABORT ON
 		END 
 	END
 
-	IF @flag = 'addBed'
+	IF @flag = 'i'
 	BEGIN
-		IF EXISTS (SELECT 'X' FROM Room WITH(NOLOCK) WHERE capacity <= (SELECT COUNT(id) FROM Beds WHERE room = @room AND ISNULL(isdeleted,'N') <> 'Y'))
-			BEGIN
-				SELECT '1' errorCode, 'Bed Capacity Full For Room' msg, NULL id
-				RETURN
-			END		
-		BEGIN TRANSACTION
-
-		INSERT INTO Beds (room, isdeleted, createdBy, createdDate)
-		VALUES (@room, 'N', @user, GETDATE());
-
-		COMMIT TRANSACTION
-
-		SELECT '0' errorCode, 'Bed added successfully' msg, SCOPE_IDENTITY() id
-		RETURN
-	END
-
-	IF @flag = 'addRoom'
-	BEGIN
-		--for ICU and special ward
-		IF @roomType = 5 OR @roomType = 6
-		BEGIN  
-        	SET @capacity = 1
-        END   
-
 		IF @capacity IS NULL
 		BEGIN
 			SELECT '0' errorCode, 'Please Specify Room Capacity' msg, NULL id
@@ -113,6 +89,16 @@ SET XACT_ABORT ON
 
 		INSERT INTO Room (capacity, roomType, isdeleted, createdBy, createdDate)
 		VALUES (@capacity, @roomType, 'N', @user, GETDATE());
+
+		DECLARE @i INT = 0;
+		SET @room = SCOPE_IDENTITY()
+		WHILE @i <= @capacity
+		BEGIN
+			INSERT INTO Beds (room, isdeleted, createdBy, createdDate)
+			VALUES (@room, 'N', @user, GETDATE());
+
+			SET @i = @i + 1;
+		END;
 
 		COMMIT TRANSACTION
 
@@ -133,6 +119,7 @@ SET XACT_ABORT ON
 		SELECT '0' errorCode, 'Room Deleted successfully' msg, null id
 		RETURN
 	END
+
 	IF @flag = 'deleteBed'
 	BEGIN
 		BEGIN TRANSACTION

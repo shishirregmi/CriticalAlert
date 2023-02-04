@@ -1,5 +1,5 @@
 ﻿using DAL.Common;
-using DAL.Ref.Bed;
+using DAL.Ref.Room;
 using DAL.Utilities;
 using Newtonsoft.Json;
 using System;
@@ -14,7 +14,7 @@ namespace Hospital.Management.Beds
 {
     public partial class List : System.Web.UI.Page
     {
-        private readonly BedDb _dao = new BedDb();
+        private readonly RoomDb _dao = new RoomDb();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["username"] == null)

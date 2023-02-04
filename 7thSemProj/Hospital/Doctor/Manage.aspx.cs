@@ -36,6 +36,8 @@ namespace Hospital.Doctor
         }
         private void LoadData()
         {
+            if (GetRowId() == "0")
+                return;
             var res = _dao.GetDoctor(GetRowId());
             DataRow docDetails = res.Tables[0].Rows[0];
             DataTable docQualifications = res.Tables[1];

@@ -23,6 +23,7 @@ namespace DAL.Ref.Doctor
         {
             var sql = "EXEC proc_doctor";
             sql += "  @flag=" + (docReq.id.Equals("0") ? "'i'" : "'u'");
+            sql += ", @id = " + FilterString(docReq.id);
             sql += ", @user = " + FilterString(docReq.user);
             sql += ", @fullname = " + FilterString(docReq.fullname);
             sql += ", @phone = " + FilterString(docReq.phone);

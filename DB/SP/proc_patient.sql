@@ -12,9 +12,12 @@ ALTER PROCEDURE [dbo].[proc_patient] (
 		,@isdeleted			VARCHAR(75)		= NULL
 		,@isactive			VARCHAR(100)	= NULL	
 
+		,@province			VARCHAR(100)	= NULL
+		,@district			VARCHAR(100)	= NULL
+		,@street			VARCHAR(100)	= NULL
+		,@patient			VARCHAR(100)	= NULL	
+
 		,@user				VARCHAR(75)		= NULL
-		,@createdDate		VARCHAR(10)		= NULL
-		,@modifiedDate		VARCHAR(100)	= NULL
 
 		,@flag				NVARCHAR(50)	= NULL
 		,@errorCode			VARCHAR(1)		= NULL
@@ -44,6 +47,11 @@ SET XACT_ABORT ON
 		INSERT INTO Patients(fullname, phone, isactive, isdeleted, createdBy, createdDate)
 		VALUES(@fullname,@phone,'Y','N',@User,GETDATE())
 
+		SET @patient = SCOPE_IDENTITY()
+
+		INSERT INTO PatientAddress (province, district, street, patient, isdeleted, createdBy, createdDate)
+		VALUES (@province, @district, @street, @patient, 'N', @user, GETDATE());
+
 		COMMIT TRANSACTION
 
 		SELECT '0' errorCode, 'Patient registered successfully' msg, SCOPE_IDENTITY() id
@@ -66,6 +74,15 @@ SET XACT_ABORT ON
 			,modifiedBy			= @user	
 			,modifiedDate		= GETDATE()
 		WHERE id = @id AND ISNULL(isdeleted,'N') <> 'Y'
+
+		UPDATE PatientAddress SET 
+			province = @province
+			,district = @district
+			,street = @street
+			,modifiedBy = @user
+			,modifiedDate = GETDATE()
+		WHERE patient = @id;
+
 		COMMIT TRANSACTION
 		SELECT '0' errorCode, 'Patient Updated successfully' msg, null id
 		RETURN
@@ -85,16 +102,12 @@ SET XACT_ABORT ON
 		RETURN
 	END
 
-	IF @flag = 'getdoctor'
+	IF @flag = 'a'
 	BEGIN
-		SELECT USR.id
-			,USR.fullname
-			,USR.email
-			,ENM.enumDetails AS userRole
-		FROM Users USR WITH(NOLOCK)
-		LEFT JOIN EnumCollections ENM ON ENM.enumValue = USR.userRole
-		WHERE USR.id = @id AND ISNULL(USR.isdeleted,'N') <> 'Y'
-		
+		SELECT p.fullname, p.phone, pa.province, pa.district, pa.street 
+		FROM Patients p WITH(NOLOCK) 
+		LEFT JOIN PatientAddress pa WITH(NOLOCK) ON pa.patient = p.id
+		WHERE p.id=@id		
 		RETURN
 	END
 
