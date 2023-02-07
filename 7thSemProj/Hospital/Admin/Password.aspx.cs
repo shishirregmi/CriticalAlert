@@ -43,7 +43,7 @@ namespace Hospital.Admin
             {
                 Session["errorcode"] = dr.ErrorCode;
                 Session["msg"] = dr.Msg;
-                Response.Redirect("/Default");
+                Response.Redirect("/Home");
             }
             else
             {

@@ -98,10 +98,7 @@ SET XACT_ABORT ON
 		BEGIN TRANSACTION
 
 		Update Users SET 
-			fullname			= @fullname	
-			,email				= @email		
-			,username			= @username	
-			,pass				= @pass		
+			 fullname			= @fullname		
 			,userRole			= @userRole	
 			,modifiedBy			= @user	
 			,modifiedDate		= GETDATE()
@@ -114,36 +111,15 @@ SET XACT_ABORT ON
 	IF @flag = 'getuser'
 	BEGIN
 		SELECT USR.id
-			,USR.fullname
-			,USR.email
-			,ENM.enumDetails AS userRole
+			  ,USR.fullname
+			  ,USR.email
+			  ,ENM.enumDetails AS userRole
 		FROM Users USR WITH(NOLOCK)
 		LEFT JOIN EnumCollections ENM ON ENM.enumValue = USR.userRole
 		WHERE USR.id = @id AND ISNULL(USR.isdeleted,'N') <> 'Y'
 		
 		RETURN
 	END
-
-	--IF @flag='a'
-	--BEGIN
-	--	SELECT U.fullname
-	--		,U.email
-	--		,U.username
-	--		,U.dob
-	--		,U.country
-	--		,U.province
-	--		,U.city
-	--		,U.street
-	--		,U.gender
-	--		,U.mobile
-	--		,U.created_at
-	--		,U.gender
-	--		,U.profile_pic
-	--		,R.name as role
-	--	FROM Users U WITH(NOLOCK)
-	--	INNER JOIN ROLE R ON U.role_id = R.id
-	--	WHERE U.id=@id
-	--END
 
 	IF @flag = 'pc'
 	BEGIN
@@ -160,7 +136,7 @@ SET XACT_ABORT ON
 				BEGIN
 					BEGIN TRANSACTION
 					UPDATE Users SET 
-						pass = @pass1
+						 pass = @pass1
 						,modifiedBy = @user
 						,modifiedDate = GETDATE()
 					WHERE username = @username
