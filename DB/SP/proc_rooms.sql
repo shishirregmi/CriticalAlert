@@ -65,7 +65,7 @@ SET XACT_ABORT ON
 			LEFT JOIN AdmitPatientMod apm ON apm.bed = b.id
 			LEFT JOIN Patients p ON p.id = apm.patient
 			LEFT JOIN Doctors d ON d.id = apm.doctor
-			WHERE ISNULL(b.isdeleted,'N') <> 'Y' AND ISNULL(b.inuse,'Y') <> 'N'
+			WHERE ISNULL(b.isdeleted,'N') <> 'Y' AND ISNULL(b.inuse,'N') <> 'N'
 			
 			RETURN
         END

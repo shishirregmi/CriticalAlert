@@ -8,6 +8,7 @@ CREATE TABLE AdmitPatient
 	,patient INT
 	,[type] INT
 	,details VARCHAR(MAX)
+	,[status] CHAR(1)
 	,isdeleted CHAR(1)
 	,isactive CHAR(1)
 	,createdBy VARCHAR(75)

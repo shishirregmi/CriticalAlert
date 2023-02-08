@@ -45,6 +45,6 @@ namespace DAL.Ref.Room
             sql += ", @user = " + FilterString(request.user);
             sql += ", @id = " + FilterString(request.id);
             return ParseDbResult(sql);
-        }
+        }       
     }
 }

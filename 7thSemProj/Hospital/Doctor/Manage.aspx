@@ -50,7 +50,7 @@
                             </div>
                             <div class="form-group ">
                                 <label for="mobile">Phone Number</label>
-                                <asp:TextBox runat="server" placeholder="Phone Number" required="true" Type="Number" class="form-control" ID="mobile"></asp:TextBox>
+                                <asp:TextBox runat="server" placeholder="Phone Number" MaxLength="10" required="true" Type="Number" class="form-control" ID="mobile"></asp:TextBox>
                             </div>
                         </div>
                     </div>

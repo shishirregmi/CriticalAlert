@@ -2,12 +2,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript">
         function DoAction(op, id) {
-            if (op == "D") {
-                var res = confirm('Are you sure want to Delete?');
+             if (op == "C") {
+                var res = confirm('Are you sure want to Mark this Admission Period as Completed?');
                 if (res) {
                     $("#hdnRowId").val(id);
-                    //$("#hdnBtnDelete").click();
-                    DeleteData(id);
+                    MarkCompleted(id);
                 }
             }
         }
@@ -20,8 +19,8 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="script" runat="server">
     <script>
-        function DeleteData(id) {
-            var dataToSend = { MethodName: "deletedata", id: id };
+        function MarkCompleted(id) {
+            var dataToSend = { MethodName: "markcomplete", id: id };
             $.ajax({
                 type: 'POST',
                 contentType: "application/json",

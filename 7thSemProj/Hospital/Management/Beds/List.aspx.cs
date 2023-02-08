@@ -1,20 +1,17 @@
 ﻿using DAL.Common;
+using DAL.Ref.Admit;
 using DAL.Ref.Room;
 using DAL.Utilities;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Hospital.Management.Beds
 {
     public partial class List : System.Web.UI.Page
     {
         private readonly RoomDb _dao = new RoomDb();
+        private readonly AdmitDb _obj = new AdmitDb();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["username"] == null)
@@ -32,9 +29,9 @@ namespace Hospital.Management.Beds
                         PostReq result = JsonConvert.DeserializeObject<PostReq>(input);
                         switch (result.MethodName)
                         {
-                            case "deletedata":
+                            case "markcomplete":
                                 result.user = Session["username"].ToString();
-                                deleteData(result);
+                                markComplete(result);
                                 break;
                         }
                         return;
@@ -50,17 +47,17 @@ namespace Hospital.Management.Beds
             {
                 var id = Request.QueryString["id"].ToString();
                 var res = _dao.GetAllBed(id);
-                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Appointed Patient List for Room " + id, true, false, false, true, true);
+                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Admitted Patient List for Room " + id, true, false, false, true, true);
             }
             else
             {
                 var res = _dao.GetAllBed();
-                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Appointed Patient List", true, false, false, true, true);
+                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Admitted Patient List", true, false, false, true, true);
             }
         }
-        private void deleteData(PostReq req)
+        private void markComplete(PostReq req)
         {
-            var res = _dao.DeleteRoom(req);
+            var res = _obj.MarkComplete(req);
             ShowAlert(res.ErrorCode, res.Msg);
             Response.ContentType = "text/plain";
             var json = JsonConvert.SerializeObject(res);

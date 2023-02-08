@@ -32,9 +32,17 @@ EXEC proc_menu
 
 EXEC proc_menu 
 			  @title = 'Admitted Patients'
-			  ,@details = 'contains link of page to add/edit/view admitted patient list'
+			  ,@details = 'contains link of page to add/edit/view current admitted patient list'
 			  ,@user = 'admin'
 			  ,@link = '/Management/Beds/List'
+			  ,@parentId = 2
+			  ,@flag = 'addSubMenu'
+
+EXEC proc_menu 
+			  @title = 'Past Admitted Patients'
+			  ,@details = 'contains link of page to add/edit/view past admitted patient list'
+			  ,@user = 'admin'
+			  ,@link = '/Management/Admission/List'
 			  ,@parentId = 2
 			  ,@flag = 'addSubMenu'
 
@@ -46,6 +54,19 @@ EXEC proc_menu
 			  ,@parentId = 2
 			  ,@flag = 'addSubMenu'
 
+---------------------------------------------------------------------------------------------
+
+EXEC proc_menu 
+			  @title = 'Logs'
+			  ,@details = 'Log related Views'
+			  ,@user = 'admin'
+			  ,@flag = 'addMenu'
 
 
-			  
+EXEC proc_menu 
+			  @title = 'Login Logs'
+			  ,@details = 'contains logs of login attempts'
+			  ,@user = 'admin'
+			  ,@link = '/Management/Beds/List'
+			  ,@parentId = 3
+			  ,@flag = 'addSubMenu'			  

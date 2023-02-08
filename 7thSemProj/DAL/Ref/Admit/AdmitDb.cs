@@ -1,5 +1,6 @@
 ﻿using DAL.Common;
 using DAL.DAL;
+using System.Data;
 
 namespace DAL.Ref.Admit
 {
@@ -17,6 +18,19 @@ namespace DAL.Ref.Admit
             sql += ",@details = " + FilterString(req.details);
             sql += ",@user = " + FilterString(req.user);
             return ParseDbResult(sql);
+        }
+        public DbResult MarkComplete(PostReq request)
+        {
+            var sql = "EXEC proc_admitPatinet";
+            sql += "  @flag = 'complete'";
+            sql += ", @user = " + FilterString(request.user);
+            sql += ", @id = " + FilterString(request.id);
+            return ParseDbResult(sql);
+        }
+        public DataSet GetPastPatients()
+        {
+            var sql = "EXEC proc_admitPatinet @flag = 'getpastpatients'";
+            return ExecuteDataset(sql);
         }
     }
 }

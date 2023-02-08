@@ -45,8 +45,8 @@ SET XACT_ABORT ON
 			END		
 		BEGIN TRANSACTION
 
-		INSERT INTO Patients(fullname, phone, gender, isactive, isdeleted, createdBy, createdDate)
-		VALUES(@fullname,@phone, @gender,'Y','N',@User,GETDATE())
+		INSERT INTO Patients(fullname, phone, gender, isadmitted, isactive, isdeleted, createdBy, createdDate)
+		VALUES(@fullname,@phone, @gender, 'N', 'Y','N',@User,GETDATE())
 
 		SET @patient = SCOPE_IDENTITY()
 
