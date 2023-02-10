@@ -22,7 +22,6 @@
         .flex-end {
             justify-content: end;
         }
-        
     </style>
 
     <!-- Google Font: Source Sans Pro -->
@@ -56,7 +55,69 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.js" integrity="sha512-rwu37NnL8piEGiFhe2c5j4GahN+gFsIn9k/0hkRY44iz0pc81tBNaUN56qF8X4fy+5pgAAgYi2C9FXdetne5sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/Scripts/script.js"></script>
+    <%--<script src="/Scripts/script.js"></script>--%>
+    <script>
+        const connectionOptions = {
+            "force new connection": true,
+            "reconnectionAttempts": "Infinity",
+            "timeout": 10000,
+            "transports": ["websocket"]
+        };
+        const socket = io('http://localhost:3000', connectionOptions);
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+
+            // Emit an event to the server
+            socket.emit('messageFromClient', { message: 'Hello from the client!' });
+
+            // Listen for an event from the server
+            socket.on('messageFromServer', data => {
+            });
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from server');
+        });
+
+        socket.on('post', data => {
+            AddNotification(data);
+        });
+
+        function ShowAlert(data) {
+            Swal.fire({
+                title: '<strong>Emergency in ' + data.room + '</strong>',
+                icon: 'info',
+                html: 'Description :' + data.requestType + '<br />' +
+                    'Doctor :' + data.doctor + '<br />' +
+                    'Patient :' + data.patient,
+                showCloseButton: true,
+                showCancelButton: true,
+                focusConfirm: false,
+                confirmButtonText: 'View',
+                confirmButtonAriaLabel: 'View',
+                cancelButtonText: 'Close',
+                cancelButtonAriaLabel: 'Close'
+            })
+        }
+        function AddNotification(data) {
+            debugger;
+            var dataToSend = { MethodName: "saveNotification", data: JSON.stringify(data) };
+            $.ajax({
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(dataToSend),
+                dataType: 'json',
+                async: false,
+                success: function (res) {
+                    ShowAlert(res);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        };
+    </script>
 </head>
 <body class="dark-mode">
     <form runat="server">
@@ -124,7 +185,7 @@
                 </div>
 
                 <!-- Sidebar Menu -->
-                <nav class="mt-2" id="dynamicMenu" runat="server">                   
+                <nav class="mt-2" id="dynamicMenu" runat="server">
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>

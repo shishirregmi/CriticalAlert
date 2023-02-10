@@ -36,3 +36,13 @@ CREATE TABLE PasswordChangeLogs
 	,createdDate DATETIME
 )
 
+CREATE TABLE NotificationLogs
+(
+	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
+	,requestType INT
+	,room INT
+	,bed INT
+	,eventTime DATETIME
+	,createdBy VARCHAR(75)
+	,createdDate DATETIME
+)

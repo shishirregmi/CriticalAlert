@@ -10,7 +10,11 @@ ALTER PROCEDURE [dbo].[proc_logs] (
 		,@activity			VARCHAR(75)		= NULL
 		,@tableName			VARCHAR(75)		= NULL
 		,@user				VARCHAR(75)		= NULL
-		,@flag				NVARCHAR(50)	= NULL
+		,@requestType		VARCHAR(20)		= NULL
+		,@eventTime			DATETIME		= NULL
+		,@room				VARCHAR(20)		= NULL
+		,@bed				VARCHAR(20)		= NULL
+		,@flag				VARCHAR(50)		= NULL
 		,@errorCode			VARCHAR(1)		= NULL
 		,@errorMessage		VARCHAR(MAX)	= NULL
 	)
@@ -39,6 +43,34 @@ SET XACT_ABORT ON
 		COMMIT TRANSACTION
 
 		SELECT @errorCode errorCode, @errorMessage msg, @rowId id
+		RETURN
+	END
+
+	IF @flag = 'i-nl'
+	BEGIN
+		BEGIN TRANSACTION
+
+		INSERT INTO NotificationLogs
+		(requestType, room, bed, eventTime, createdBy, createdDate)
+		VALUES (@requestType, @room, @bed, @eventTime, @user, GETDATE());
+
+		SET @rowId = SCOPE_IDENTITY()
+
+		COMMIT TRANSACTION 
+		SELECT
+			 ec.enumDetails AS requestType
+			,CONCAT(CAST(b.room AS VARCHAR(10)),CONCAT('-',CAST(b.id AS VARCHAR(10)))) AS room
+			,nl.eventTime AS eventTime
+			,p.fullname AS patient
+			,d.fullname AS doctor
+		FROM NotificationLogs nl
+		LEFT JOIN Beds b ON nl.bed = b.id
+		LEFT JOIN Room r ON r.id = b.room
+		LEFT JOIN AdmitPatientMod apm ON b.id = apm.bed
+		LEFT JOIN Patients p ON p.id = apm.patient
+		LEFT JOIN Doctors d ON d.id = apm.doctor
+		LEFT JOIN EnumCollections ec ON ec.enumValue = nl.requestType
+		WHERE nl.id = @rowId
 		RETURN
 	END
 

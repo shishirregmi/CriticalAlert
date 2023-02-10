@@ -14,7 +14,6 @@ ALTER PROCEDURE [dbo].[proc_rooms] (
 		,@isactive			VARCHAR(100)	= NULL	
 
 		,@user				VARCHAR(75)		= NULL
-
 		,@flag				NVARCHAR(50)	= NULL
 		,@errorCode			VARCHAR(1)		= NULL
 		,@errorMessage		VARCHAR(MAX)	= NULL

@@ -21,3 +21,9 @@ EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Delivery',@enumParent = 'Patie
 EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Male',@enumParent = 'Gender',@user = 'admin'
 EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Female',@enumParent = 'Gender',@user = 'admin'
 EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Third',@enumParent = 'Gender',@user = 'admin'
+
+--Adding Gender To Enum Collection
+EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Patient Eye Closed',@enumParent = 'NotificationRequestType',@user = 'admin'
+EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Patient Eye Open',@enumParent = 'NotificationRequestType',@user = 'admin'
+EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Patient Excessive Movement Start',@enumParent = 'NotificationRequestType',@user = 'admin'
+EXEC proc_enum @flag = 'addEnum', @enumDetails = 'Patient Excessive Movement End',@enumParent = 'NotificationRequestType',@user = 'admin'
