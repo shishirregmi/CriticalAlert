@@ -64,9 +64,10 @@ EXEC proc_menu
 
 
 EXEC proc_menu 
-			  @title = 'Login Logs'
-			  ,@details = 'contains logs of login attempts'
+			  @title = 'System Logs'
+			  ,@details = 'contains logs of db crud attempts'
 			  ,@user = 'admin'
-			  ,@link = '/Management/Beds/List'
+			  ,@link = '/Logs/SystemLogs/List'
 			  ,@parentId = 3
-			  ,@flag = 'addSubMenu'			  
+			  ,@flag = 'addSubMenu'		
+			  

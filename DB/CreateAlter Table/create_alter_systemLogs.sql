@@ -6,18 +6,20 @@ CREATE TABLE SysLogs
 	,activity VARCHAR(50)
 	,tableName VARCHAR(50)
 	,rowId INT
-	,success INT
+	,errorCode INT
+	,errorMessage VARCHAR(150)
 	,createdBy VARCHAR(75)
 	,createdDate DATETIME
 )
-                         
+                
 CREATE TABLE LoginLogs
 (
 	 id INT NOT NULL PRIMARY KEY IDENTITY (1, 1)
 	,username VARCHAR(75)
 	,pass VARCHAR(100)
 	,userRole INT
-	,success INT
+	,errorCode INT
+	,errorMessage VARCHAR(150)
 	,createdDate DATETIME
 )
 
@@ -28,8 +30,9 @@ CREATE TABLE PasswordChangeLogs
 	,userId INT
 	,oldpass VARCHAR(100)
 	,newpass VARCHAR(100)
-	,success INT
-	,faliureMessage VARCHAR(100)
+	,errorCode INT
+	,errorMessage VARCHAR(150)
 	,createdBy VARCHAR(75)
 	,createdDate DATETIME
 )
+

@@ -44,7 +44,7 @@ SET XACT_ABORT ON
 	BEGIN
 		IF EXISTS (SELECT 'X' FROM Doctors WITH(NOLOCK) WHERE phone = @phone)
 		BEGIN
-			SELECT '1' errorCode, 'Phone Number already in use' msg, NULL id
+			EXEC proc_logs @rowId = 0 ,@activity = 'Insert' ,@tableName = 'Doctors' ,@user = @user ,@flag = 'i-sl' ,@errorCode = '1' ,@errorMessage = 'Phone Number already in use'
 			RETURN
 		END		
 		BEGIN TRANSACTION		
@@ -70,7 +70,7 @@ SET XACT_ABORT ON
 
 		COMMIT TRANSACTION
 
-		SELECT '0' errorCode, 'Doctor registered successfully' msg, SCOPE_IDENTITY() id
+		EXEC proc_logs @rowId = @doctor ,@activity = 'Insert' ,@tableName = 'Doctors' ,@user = @user ,@flag = 'i-sl' ,@errorCode = '0' ,@errorMessage = 'Doctor registered successfully'
 		RETURN
 	END
 

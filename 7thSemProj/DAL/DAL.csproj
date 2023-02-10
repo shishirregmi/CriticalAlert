@@ -67,6 +67,7 @@
     <Compile Include="Common\PostReq.cs" />
     <Compile Include="Common\UserDetails.cs" />
     <Compile Include="Ref\Admit\AdmitDb.cs" />
+    <Compile Include="Ref\Logs\LogDb.cs" />
     <Compile Include="Ref\Room\RoomDb.cs" />
     <Compile Include="Ref\Components\Menu\MenuDb.cs" />
     <Compile Include="Ref\Doctor\DoctorDb.cs" />
