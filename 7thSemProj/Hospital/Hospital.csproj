@@ -128,6 +128,7 @@
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Home.aspx" />
     <Content Include="Logout.aspx" />
+    <Content Include="Logs\NotificationLogs\List.aspx" />
     <Content Include="Logs\SystemLogs\List.aspx" />
     <Content Include="Management\Admission\List.aspx" />
     <Content Include="Management\Beds\List.aspx" />
@@ -218,6 +219,13 @@
     </Compile>
     <Compile Include="Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Logs\NotificationLogs\List.aspx.cs">
+      <DependentUpon>List.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logs\NotificationLogs\List.aspx.designer.cs">
+      <DependentUpon>List.aspx</DependentUpon>
     </Compile>
     <Compile Include="Logs\SystemLogs\List.aspx.cs">
       <DependentUpon>List.aspx</DependentUpon>

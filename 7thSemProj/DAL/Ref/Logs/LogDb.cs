@@ -12,6 +12,13 @@ namespace DAL.Ref.Logs
             sql += "  @flag = 's-sl'";
             return ExecuteDataset(sql);
         }
+
+        public DataSet GetNotificationLog()
+        {
+            var sql = " EXEC proc_logs";
+            sql += "  @flag = 's-nl'";
+            return ExecuteDataset(sql);
+        }
         public DataRow SaveNotificationLog(NotificationLogs request)
         {
             var sql = " EXEC proc_logs";

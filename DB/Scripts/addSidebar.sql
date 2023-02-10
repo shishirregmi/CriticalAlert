@@ -70,4 +70,12 @@ EXEC proc_menu
 			  ,@link = '/Logs/SystemLogs/List'
 			  ,@parentId = 3
 			  ,@flag = 'addSubMenu'		
+
+EXEC proc_menu 
+			  @title = 'Notification Logs'
+			  ,@details = 'contains logs of db crud attempts'
+			  ,@user = 'admin'
+			  ,@link = '/Logs/NotificationLogs/List'
+			  ,@parentId = 3
+			  ,@flag = 'addSubMenu'	
 			  

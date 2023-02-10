@@ -4,12 +4,7 @@ using DAL.Ref.Doctor;
 using DAL.Utilities;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Hospital.Doctor
 {
