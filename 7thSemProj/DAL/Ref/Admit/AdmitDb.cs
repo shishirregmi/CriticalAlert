@@ -32,5 +32,11 @@ namespace DAL.Ref.Admit
             var sql = "EXEC proc_admitPatinet @flag = 'getpastpatients'";
             return ExecuteDataset(sql);
         }
+        public DataSet GetPatient(string id)
+        {
+            var sql = "EXEC proc_admitPatinet @flag = 'a'";
+            sql += ", @id = " + FilterString(id);
+            return ExecuteDataset(sql);
+        }
     }
 }

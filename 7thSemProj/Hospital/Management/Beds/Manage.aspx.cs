@@ -51,6 +51,7 @@ namespace Hospital.Management.Beds
             };
 
             DbResult dr = _dao.AdmitPatient(req);
+            ManageMessage(dr);
             Response.ContentType = "text/plain";
             var json = JsonConvert.SerializeObject(dr);
             Response.Write(json);
@@ -63,6 +64,37 @@ namespace Hospital.Management.Beds
         public static string ReadQueryString(string key, string defVal)
         {
             return HttpContext.Current.Request.QueryString[key] ?? defVal;
+        }
+        private void ManageMessage(DbResult dr)
+        {
+            if (dr.ErrorCode.Equals("0"))
+            {
+                Session["errorcode"] = dr.ErrorCode;
+                Session["msg"] = dr.Msg;
+            }
+            else
+            {
+                ShowAlert(dr.ErrorCode, dr.Msg);
+            }
+        }
+        protected void CheckAlert()
+        {
+            if (Session["errorcode"] != null)
+            {
+                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
+                Session["errorcode"] = null;
+                Session["msg"] = null;
+            }
+        }
+        private void ShowAlert(string errorcode, string msg)
+        {
+            var success = errorcode.Equals("0") ? "success" : "error";
+            var script = "Swal.fire({position: 'top-end'," +
+                    "icon: '" + success + "'," +
+                    "title: '" + msg + "'," +
+                    "showConfirmButton: false," +
+                    "timer: 1500})";
+            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
         }
     }
 }

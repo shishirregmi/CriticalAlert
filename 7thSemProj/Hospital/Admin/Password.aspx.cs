@@ -21,6 +21,7 @@ namespace Hospital.Admin
             {
                 Response.Redirect("/Default");
             }
+            CheckAlert();
         }
         protected void btn_change_Click(object sender, EventArgs e)
         {
@@ -47,19 +48,25 @@ namespace Hospital.Admin
             }
             else
             {
-                ShowAlert(dr);
+                ShowAlert(dr.ErrorCode,dr.Msg);
             }
         }
-
-        private void ShowAlert(DbResult dr)
+        protected void CheckAlert()
         {
-            var success = dr.ErrorCode.Equals("0") ? "success" : "error";
+            if (Session["errorcode"] != null)
+            {
+                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
+                Session["errorcode"] = null;
+                Session["msg"] = null;
+            }
+        }
+        private void ShowAlert(string errorcode, string msg)
+        {
+            var success = errorcode.Equals("0") ? "success" : "error";
             var script = "Swal.fire({position: 'top-end'," +
                     "icon: '" + success + "'," +
-                    "title: '" + dr.Msg + "'," +
+                    "title: '" + msg + "'," +
                     "showConfirmButton: false," +
-                    "width: '150px'," +
-                    "height: '50px'," +
                     "timer: 1500})";
             ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
         }

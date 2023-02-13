@@ -69,7 +69,7 @@ namespace DAL.Utilities
                                 if (allowDelete)
                                     sb.AppendLine("&nbsp&nbsp<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i></a>");
                                 if (alllowApprove)
-                                    sb.AppendLine("&nbsp&nbsp<a title='Mark Over' href='javascript:void(null)' onclick=\"DoAction('C','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-success\"><i class='fa fa-check fa-w-16 fa-1x'></i></a>");
+                                    sb.AppendLine("&nbsp&nbsp<a title='Discharge' href='javascript:void(null)' onclick=\"DoAction('C','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-success\"><i class='fa fa-check fa-w-16 fa-1x'></i></a>");
                                 sb.AppendLine("</td>");
                             }
                             sb.AppendLine("</tr>");

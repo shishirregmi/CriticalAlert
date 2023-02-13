@@ -25,6 +25,7 @@ namespace Hospital.Doctor
             {
                 Response.Redirect("/Default");
             }
+            CheckAlert();
             if (!IsPostBack)
             {
                 string method = Request.Form["Method"];
@@ -97,7 +98,7 @@ namespace Hospital.Doctor
                 district = district,
                 street = street,
                 user = user
-            };            string ObjectToXML(object input)            {                try                {                    var stringwriter = new System.IO.StringWriter();                    var serializer = new XmlSerializer(input.GetType());                    serializer.Serialize(stringwriter, input);                    return stringwriter.ToString();                }                catch (Exception ex)                {                    if (ex.InnerException != null)                        ex = ex.InnerException;                    return "Could not convert: " + ex.Message;                }            }            string xml = ObjectToXML(qual);            DbResult dr = _dao.Save(docReq, docAddReq, xml);            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
+            };            string ObjectToXML(object input)            {                try                {                    var stringwriter = new System.IO.StringWriter();                    var serializer = new XmlSerializer(input.GetType());                    serializer.Serialize(stringwriter, input);                    return stringwriter.ToString();                }                catch (Exception ex)                {                    if (ex.InnerException != null)                        ex = ex.InnerException;                    return "Could not convert: " + ex.Message;                }            }            string xml = ObjectToXML(qual);            DbResult dr = _dao.Save(docReq, docAddReq, xml);            ManageMessage(dr);            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
         }
         public string GetRowId()
         {
@@ -106,6 +107,37 @@ namespace Hospital.Doctor
         public static string ReadQueryString(string key, string defVal)
         {
             return HttpContext.Current.Request.QueryString[key] ?? defVal;
+        }
+        private void ManageMessage(DbResult dr)
+        {
+            if (dr.ErrorCode.Equals("0"))
+            {
+                Session["errorcode"] = dr.ErrorCode;
+                Session["msg"] = dr.Msg;
+            }
+            else
+            {
+                ShowAlert(dr.ErrorCode, dr.Msg);
+            }
+        }
+        protected void CheckAlert()
+        {
+            if (Session["errorcode"] != null)
+            {
+                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
+                Session["errorcode"] = null;
+                Session["msg"] = null;
+            }
+        }
+        private void ShowAlert(string errorcode, string msg)
+        {
+            var success = errorcode.Equals("0") ? "success" : "error";
+            var script = "Swal.fire({position: 'top-end'," +
+                    "icon: '" + success + "'," +
+                    "title: '" + msg + "'," +
+                    "showConfirmButton: false," +
+                    "timer: 1500})";
+            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
         }
     }
 }

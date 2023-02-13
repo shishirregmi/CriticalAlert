@@ -13,9 +13,9 @@ namespace Hospital.Logs.SystemLogs
             {
                 Response.Redirect("/Default");
             }
+            CheckAlert();
             if (!IsPostBack)
             {
-                CheckAlert();
                 LoadData();
             }
         }

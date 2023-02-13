@@ -41,6 +41,30 @@ BEGIN
 	RETURN
 END
 
+IF @flag = 'a'
+BEGIN
+	
+	SELECT TOP 1
+		 p.fullname																					AS fullname
+		,p.phone																					AS phone
+		,ec.enumDetails																				AS gender
+		,CONCAT(pa.street,CONCAT(', ',CONCAT(pa.district,CONCAT(', ',pa.province))))					AS patientAddress
+		,ISNULL(CAST(apm.createdDate AS VARCHAR(11)),ap.createdDate)								AS admittedOn
+		,CASE WHEN p.isadmitted = 'Y' THEN  '-' ELSE CAST(ap.modifiedDate AS VARCHAR(11)) END		AS dischargedOn
+		,CONCAT(CAST(b.room AS VARCHAR(10)),CONCAT('-',CAST(b.id AS VARCHAR(10))))					AS bed
+	FROM Patients p
+	LEFT JOIN PatientAddress pa ON pa.patient = P.id
+	LEFT JOIN EnumCollections ec ON ec.enumValue = p.gender
+	LEFT JOIN AdmitPatient ap ON p.id = ap.patient
+	LEFT JOIN AdmitPatientMod apm ON p.id = apm.patient
+	LEFT JOIN EnumCollections ec1 ON ec1.enumValue = ap.[type]
+	LEFT JOIN Beds b ON b.id = apm.bed
+	WHERE apm.id = @id
+	ORDER BY ap.createdDate DESC
+
+	RETURN
+END
+
 IF @flag = 'complete'
 BEGIN
 	BEGIN TRANSACTION

@@ -133,6 +133,7 @@
     <Content Include="Management\Admission\List.aspx" />
     <Content Include="Management\Beds\List.aspx" />
     <Content Include="Management\Beds\Manage.aspx" />
+    <Content Include="Management\Beds\View.aspx" />
     <Content Include="Management\Rooms\List.aspx" />
     <Content Include="Management\Rooms\Manage.aspx" />
     <Content Include="Patients\List.aspx" />
@@ -254,6 +255,13 @@
     </Compile>
     <Compile Include="Management\Beds\Manage.aspx.designer.cs">
       <DependentUpon>Manage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Management\Beds\View.aspx.cs">
+      <DependentUpon>View.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Management\Beds\View.aspx.designer.cs">
+      <DependentUpon>View.aspx</DependentUpon>
     </Compile>
     <Compile Include="Management\Rooms\List.aspx.cs">
       <DependentUpon>List.aspx</DependentUpon>
