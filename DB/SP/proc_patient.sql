@@ -40,7 +40,7 @@ SET XACT_ABORT ON
 	BEGIN
 		IF EXISTS (SELECT 'X' FROM Patients WITH(NOLOCK) WHERE phone = @phone)
 			BEGIN
-				SELECT '1' errorCode, 'Phone Number already in use' msg, NULL id
+				EXEC proc_logs @rowId = @id ,@activity = 'Insert' ,@tableName = 'Patients' ,@user = @user ,@flag = 'i-sl' ,@patient = @id, @doctor = NULL ,@errorCode = '1' ,@errorMessage = 'Phone Number already in use'
 				RETURN
 			END		
 		BEGIN TRANSACTION
@@ -55,7 +55,8 @@ SET XACT_ABORT ON
 
 		COMMIT TRANSACTION
 
-		SELECT '0' errorCode, 'Patient registered successfully' msg, SCOPE_IDENTITY() id
+		EXEC proc_logs @rowId = @patient ,@activity = 'Insert' ,@tableName = 'Patient' ,@user = @user ,@flag = 'i-sl' ,@patient = @patient, @doctor = NULL ,@errorCode = '0' ,@errorMessage = 'Patient registered successfully'
+
 		RETURN
 	END
 
@@ -63,7 +64,7 @@ SET XACT_ABORT ON
 	BEGIN
 		IF EXISTS (SELECT 'X' FROM Patients WITH(NOLOCK) WHERE phone = @phone AND id <> @id)
 			BEGIN
-				SELECT '1' errorCode, 'Phone Number already in use' msg, NULL id
+				EXEC proc_logs @rowId = @id ,@activity = 'Update' ,@tableName = 'Patients' ,@user = @user ,@flag = 'i-sl' ,@patient = @id, @doctor = NULL ,@errorCode = '1' ,@errorMessage = 'Phone Number already in use'
 				RETURN
 			END		
 		BEGIN TRANSACTION
@@ -85,7 +86,7 @@ SET XACT_ABORT ON
 		WHERE patient = @id;
 
 		COMMIT TRANSACTION
-		SELECT '0' errorCode, 'Patient Updated successfully' msg, null id
+		EXEC proc_logs @rowId = @id ,@activity = 'Update' ,@tableName = 'Patient' ,@user = @user ,@flag = 'i-sl' ,@patient = @id, @doctor = NULL ,@errorCode = '0' ,@errorMessage = 'Patient updated successfully'
 		RETURN
 	END
 
@@ -99,7 +100,8 @@ SET XACT_ABORT ON
 			,modifiedDate		= GETDATE()
 		WHERE id = @id AND ISNULL(isdeleted,'N') <> 'Y'
 		COMMIT TRANSACTION
-		SELECT '0' errorCode, 'Patient Deleted successfully' msg, null id
+		EXEC proc_logs @rowId = @patient ,@activity = 'Delete' ,@tableName = 'Patient' ,@user = @user ,@flag = 'i-sl' ,@patient = @patient, @doctor = NULL ,@errorCode = '0' ,@errorMessage = 'Patient deleted successfully'
+
 		RETURN
 	END
 

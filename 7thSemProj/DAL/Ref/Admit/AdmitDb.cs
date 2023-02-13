@@ -8,7 +8,7 @@ namespace DAL.Ref.Admit
     {
         public DbResult AdmitPatient(AdmitDetails req)
         {
-            var sql = "EXEC proc_admitPatinet";
+            var sql = "EXEC proc_admitPatient";
             sql += " @flag = 'admit'";
             sql += ",@id = " + FilterString(req.id);
             sql += ",@bed = " + FilterString(req.bed);
@@ -21,20 +21,20 @@ namespace DAL.Ref.Admit
         }
         public DbResult MarkComplete(PostReq request)
         {
-            var sql = "EXEC proc_admitPatinet";
-            sql += "  @flag = 'complete'";
+            var sql = "EXEC proc_admitPatient";
+            sql += "  @flag = 'discharge'";
             sql += ", @user = " + FilterString(request.user);
             sql += ", @id = " + FilterString(request.id);
             return ParseDbResult(sql);
         }
         public DataSet GetPastPatients()
         {
-            var sql = "EXEC proc_admitPatinet @flag = 'getpastpatients'";
+            var sql = "EXEC proc_admitPatient @flag = 'getpastpatients'";
             return ExecuteDataset(sql);
         }
         public DataSet GetPatient(string id)
         {
-            var sql = "EXEC proc_admitPatinet @flag = 'a'";
+            var sql = "EXEC proc_admitPatient @flag = 'a'";
             sql += ", @id = " + FilterString(id);
             return ExecuteDataset(sql);
         }

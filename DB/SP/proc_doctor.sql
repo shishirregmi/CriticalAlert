@@ -44,7 +44,7 @@ SET XACT_ABORT ON
 	BEGIN
 		IF EXISTS (SELECT 'X' FROM Doctors WITH(NOLOCK) WHERE phone = @phone)
 		BEGIN
-			EXEC proc_logs @rowId = 0 ,@activity = 'Insert' ,@tableName = 'Doctors' ,@user = @user ,@flag = 'i-sl' ,@errorCode = '1' ,@errorMessage = 'Phone Number already in use'
+			EXEC proc_logs @rowId = @id ,@activity = 'Insert' ,@tableName = 'Doctor' ,@user = @user ,@flag = 'i-sl' ,@patient = NULL, @doctor = @id ,@errorCode = '1' ,@errorMessage = 'Phone Number already in use'
 			RETURN
 		END		
 		BEGIN TRANSACTION		
@@ -70,7 +70,7 @@ SET XACT_ABORT ON
 
 		COMMIT TRANSACTION
 
-		EXEC proc_logs @rowId = @doctor ,@activity = 'Insert' ,@tableName = 'Doctors' ,@user = @user ,@flag = 'i-sl' ,@errorCode = '0' ,@errorMessage = 'Doctor registered successfully'
+		EXEC proc_logs @rowId = @doctor ,@activity = 'Insert' ,@tableName = 'Doctor' ,@user = @user ,@flag = 'i-sl' ,@patient = NULL, @doctor = @doctor ,@errorCode = '0' ,@errorMessage = 'Doctor registered successfully'
 		RETURN
 	END
 
@@ -78,7 +78,7 @@ SET XACT_ABORT ON
 	BEGIN
 		IF EXISTS (SELECT 'X' FROM Doctors WITH(NOLOCK) WHERE phone = @phone AND id <> @id)
 		BEGIN
-			SELECT '1' errorCode, 'Phone Number already in use' msg, NULL id
+			EXEC proc_logs @rowId = @id ,@activity = 'Update' ,@tableName = 'Doctor' ,@user = @user ,@flag = 'i-sl' ,@patient = NULL, @doctor = @id ,@errorCode = '1' ,@errorMessage = 'Phone Number already in use'
 			RETURN
 		END		
 		BEGIN TRANSACTION
@@ -118,7 +118,7 @@ SET XACT_ABORT ON
 		SELECT p.title, p.details, p.college, @id, 'N', @user, GETDATE() FROM #TEMPU p WITH(NOLOCK)
 
 		COMMIT TRANSACTION
-		SELECT '0' errorCode, 'Doctor Updated successfully' msg, null id
+		EXEC proc_logs @rowId = @id ,@activity = 'Update' ,@tableName = 'Doctor' ,@user = @user ,@flag = 'i-sl' ,@patient = NULL, @doctor = @id ,@errorCode = '0' ,@errorMessage = 'Doctor Updated Successfully'
 		RETURN
 	END
 
@@ -132,7 +132,7 @@ SET XACT_ABORT ON
 			,modifiedDate		= GETDATE()
 		WHERE id = @id AND ISNULL(isdeleted,'N') <> 'Y'
 		COMMIT TRANSACTION
-		SELECT '0' errorCode, 'Doctor Deleted successfully' msg, null id
+		EXEC proc_logs @rowId = @id ,@activity = 'Delete' ,@tableName = 'Doctor' ,@user = @user ,@flag = 'i-sl' ,@patient = NULL, @doctor = @id ,@errorCode = '0' ,@errorMessage = 'Doctor Deleted Successfully'
 		RETURN
 	END
 

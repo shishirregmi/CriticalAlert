@@ -16,6 +16,13 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="/dist/css/adminlte.min.css">
     <style>
+        body{
+            background-color:#454d55!important;
+        }
+        .card{
+            background-color:#454d55!important;
+            color:white!important;
+        }
         .error-message{
             color:red;
         }

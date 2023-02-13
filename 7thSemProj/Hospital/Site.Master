@@ -22,6 +22,25 @@
         .flex-end {
             justify-content: end;
         }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            border: 1px solid #ced4da;
+            -webkit-box-shadow: 0 0 0px 1000px #343a40 inset;
+        }
+        .select2-container--default .select2-selection--single{
+            background-color: #343a40!important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered{
+            color:white!important;
+        }
     </style>
 
     <!-- Google Font: Source Sans Pro -->
@@ -156,7 +175,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="/Home" runat="server" class="brand-link">
-                <img src='<%=ResolveClientUrl("dist/img/AdminLTELogo.png")%>' alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src='<%=ResolveClientUrl("Images/Logo/logo.png")%>' alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Critical Alert</span>
             </a>
 

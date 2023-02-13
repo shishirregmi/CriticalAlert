@@ -40,13 +40,13 @@
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Doctor</h3>
+                        <h3 class="card-title">Add Patient</h3>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
                             <div class="form-group">
                                 <label for="fullname">Patient Name</label>
-                                <asp:TextBox runat="server" placeholder="Doctor Name" required="true" class="form-control" ID="fullname"></asp:TextBox>
+                                <asp:TextBox runat="server" placeholder="Patient Name" required="true" class="form-control" ID="fullname"></asp:TextBox>
                             </div>
                             <div class="form-group ">
                                 <label for="mobile">Phone Number</label>

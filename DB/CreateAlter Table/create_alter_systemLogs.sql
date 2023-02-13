@@ -6,6 +6,8 @@ CREATE TABLE SysLogs
 	,activity VARCHAR(50)
 	,tableName VARCHAR(50)
 	,rowId INT
+	,patient INT
+	,doctor INT
 	,errorCode INT
 	,errorMessage VARCHAR(150)
 	,createdBy VARCHAR(75)
@@ -42,6 +44,8 @@ CREATE TABLE NotificationLogs
 	,requestType INT
 	,room INT
 	,bed INT
+	,patient INT
+	,doctor INT
 	,eventTime DATETIME
 	,createdBy VARCHAR(75)
 	,createdDate DATETIME

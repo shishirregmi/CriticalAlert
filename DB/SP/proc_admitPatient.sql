@@ -5,7 +5,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[proc_admitPatinet] (
+ALTER PROCEDURE [dbo].[proc_admitPatient] (
 		 @id				INT				= NULL	
 		,@rowId				INT				= NULL
 		,@bed				INT				= NULL
@@ -31,24 +31,23 @@ BEGIN
 	INSERT INTO AdmitPatientMod (bed, doctor, patient, [type], details, isdeleted, isactive, createdBy, createdDate)
 	VALUES (@bed, @doctor, @patient, @type, @details, 'N', 'Y', @user, GETDATE())
 
-	SET @rowId = SCOPE_IDENTITY()
+	SET @id = SCOPE_IDENTITY()
 
 	UPDATE Beds SET inuse = 'Y' WHERE id = @bed
 	UPDATE Patients SET isadmitted = 'Y' WHERE id = @patient
 	COMMIT TRANSACTION
 
-	SELECT '0' errorCode, 'Admitted successfully' msg, @rowId id
+	EXEC proc_logs @rowId = @id ,@activity = 'Admit' ,@tableName = 'AdmitPatientMod' ,@user = @user ,@flag = 'i-sl' ,@patient = @patient, @doctor = @doctor ,@errorCode = '0' ,@errorMessage = 'Patient admitted successfully'
 	RETURN
 END
 
 IF @flag = 'a'
-BEGIN
-	
+BEGIN	
 	SELECT TOP 1
 		 p.fullname																					AS fullname
 		,p.phone																					AS phone
 		,ec.enumDetails																				AS gender
-		,CONCAT(pa.street,CONCAT(', ',CONCAT(pa.district,CONCAT(', ',pa.province))))					AS patientAddress
+		,CONCAT(pa.street,CONCAT(', ',CONCAT(pa.district,CONCAT(', ',pa.province))))				AS patientAddress
 		,ISNULL(CAST(apm.createdDate AS VARCHAR(11)),ap.createdDate)								AS admittedOn
 		,CASE WHEN p.isadmitted = 'Y' THEN  '-' ELSE CAST(ap.modifiedDate AS VARCHAR(11)) END		AS dischargedOn
 		,CONCAT(CAST(b.room AS VARCHAR(10)),CONCAT('-',CAST(b.id AS VARCHAR(10))))					AS bed
@@ -65,13 +64,14 @@ BEGIN
 	RETURN
 END
 
-IF @flag = 'complete'
+IF @flag = 'discharge'
 BEGIN
 	BEGIN TRANSACTION
 	
 	SELECT 
-		@bed = apm.bed,
-		@patient = apm.patient
+		 @bed = apm.bed
+		,@patient = apm.patient
+		,@doctor = apm.doctor
 	FROM AdmitPatientMod apm
 	WHERE apm.id = @id
 
@@ -87,7 +87,7 @@ BEGIN
 	UPDATE Patients SET isadmitted = 'N' WHERE id = @patient;
 	COMMIT TRANSACTION
 
-	SELECT '0' errorCode, 'Admission Period Completed Successfully' msg, @rowId id
+	EXEC proc_logs @rowId = @rowId ,@activity = 'Discharge' ,@tableName = 'AdmitPatient' ,@user = @user ,@patient = @patient, @doctor = @doctor ,@flag = 'i-sl' ,@errorCode = '0' ,@errorMessage = 'Patient discharged successfully'
 	RETURN
 END
 

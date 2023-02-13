@@ -10,6 +10,8 @@ ALTER PROCEDURE [dbo].[proc_logs] (
 		,@activity			VARCHAR(75)		= NULL
 		,@tableName			VARCHAR(75)		= NULL
 		,@user				VARCHAR(75)		= NULL
+		,@patient			INT				= NULL
+		,@doctor			INT				= NULL
 		,@requestType		VARCHAR(20)		= NULL
 		,@eventTime			DATETIME		= NULL
 		,@room				VARCHAR(20)		= NULL
@@ -36,9 +38,8 @@ SET XACT_ABORT ON
 	BEGIN
 		BEGIN TRANSACTION
 
-		INSERT INTO SysLogs
-		(activity, tableName, rowId, errorCode, errorMessage, createdBy, createdDate)
-		VALUES (@activity, @tableName, @rowId, @errorCode, @errorMessage, @user, GETDATE());
+		INSERT INTO SysLogs (activity, tableName, rowId, patient, doctor, errorCode, errorMessage, createdBy, createdDate)
+		VALUES (@activity, @tableName, @rowId, @patient, @doctor, @errorCode, @errorMessage, @user, GETDATE());
 
 		COMMIT TRANSACTION
 
@@ -61,10 +62,8 @@ SET XACT_ABORT ON
 			,nl.createdDate AS createdDate
 		FROM NotificationLogs nl
 		LEFT JOIN Beds b ON nl.bed = b.id
-		LEFT JOIN Room r ON r.id = b.room
-		LEFT JOIN AdmitPatientMod apm ON b.id = apm.bed
-		LEFT JOIN Patients p ON p.id = apm.patient
-		LEFT JOIN Doctors d ON d.id = apm.doctor
+		LEFT JOIN Patients p ON p.id = nl.patient
+		LEFT JOIN Doctors d ON d.id = nl.doctor
 		LEFT JOIN EnumCollections ec ON ec.enumValue = nl.requestType
 
 		RETURN
@@ -72,11 +71,18 @@ SET XACT_ABORT ON
 
 	IF @flag = 'i-nl'
 	BEGIN
+		
+		SELECT 
+			 @bed = apm.bed
+			,@patient = apm.patient
+			,@doctor = apm.doctor
+		FROM AdmitPatientMod apm
+		WHERE apm.bed = @bed
+		
 		BEGIN TRANSACTION
 
-		INSERT INTO NotificationLogs
-		(requestType, room, bed, eventTime, createdBy, createdDate)
-		VALUES (@requestType, @room, @bed, @eventTime, @user, GETDATE());
+		INSERT INTO NotificationLogs (requestType, room, bed, patient, doctor, eventTime, createdBy, createdDate)
+		VALUES (@requestType, @room, @bed, @patient, @doctor, @eventTime, @user, GETDATE());
 
 		SET @rowId = SCOPE_IDENTITY()
 
@@ -89,10 +95,8 @@ SET XACT_ABORT ON
 			,d.fullname AS doctor
 		FROM NotificationLogs nl
 		LEFT JOIN Beds b ON nl.bed = b.id
-		LEFT JOIN Room r ON r.id = b.room
-		LEFT JOIN AdmitPatientMod apm ON b.id = apm.bed
-		LEFT JOIN Patients p ON p.id = apm.patient
-		LEFT JOIN Doctors d ON d.id = apm.doctor
+		LEFT JOIN Patients p ON p.id = nl.patient
+		LEFT JOIN Doctors d ON d.id = nl.doctor
 		LEFT JOIN EnumCollections ec ON ec.enumValue = nl.requestType
 		WHERE nl.id = @rowId
 		RETURN
