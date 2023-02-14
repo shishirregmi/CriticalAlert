@@ -58,9 +58,25 @@ BEGIN
 	LEFT JOIN AdmitPatientMod apm ON p.id = apm.patient
 	LEFT JOIN EnumCollections ec1 ON ec1.enumValue = ap.[type]
 	LEFT JOIN Beds b ON b.id = apm.bed
-	WHERE apm.id = @id
+	WHERE apm.patient = @id OR ap.patient = @id
 	ORDER BY ap.createdDate DESC
 
+	SELECT @patient = apm.patient FROM AdmitPatientMod apm 
+	WHERE apm.patient = @id
+
+	SELECT logType='sl', sl.id,requestType = NULL,room = NULL,bed = NULL,eventTime = NULL,sl.activity,sl.tableName,sl.rowId,sl.errorCode,sl.errorMessage,patient = p.fullname,doctor = d.fullname,sl.createdBy,sl.createdDate
+	FROM SysLogs sl WITH(NOLOCK)
+	LEFT JOIN Patients p ON p.id = sl.patient
+	LEFT JOIN Doctors d ON d.id = sl.doctor
+	WHERE sl.patient = @patient
+	UNION
+	SELECT logType='nl', nl.id,requestType = ec.enumDetails,nl.room,nl.bed,nl.eventTime,activity = NULL,tableName = NULL,rowId = NULL,errorCode = NULL,errorMessage = NULL,patient = p.fullname,doctor = d.fullname,nl.createdBy,nl.createdDate
+	FROM NotificationLogs nl WITH(NOLOCK)
+	LEFT JOIN Patients p ON p.id = nl.patient
+	LEFT JOIN Doctors d ON d.id = nl.doctor
+	LEFT JOIN EnumCollections ec ON ec.enumValue = nl.requestType
+	WHERE nl.patient = @patient
+	ORDER BY createdDate DESC
 	RETURN
 END
 

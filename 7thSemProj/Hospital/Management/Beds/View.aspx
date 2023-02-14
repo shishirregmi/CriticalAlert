@@ -37,56 +37,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-12" id="patientLogs" runat="server">
                             <h4>Recent Activity</h4>
 
-                            <div class="post">
-                                <div class="user-block">
-                                    <img class="img-circle img-sm" src="/Images/dist/warning.png" alt="user image">
-                                    <span class="username">
-                                        <a href="#">Jonathan Burke Jr.</a>
-                                    </span>
-                                    <span class="description">Shared publicly - 7:45 PM today</span>
-                                </div>
-                                <!-- /.user-block -->
-                                <p>
-                                    Lorem ipsum represents a long-held tradition for designers,
-                        typographers and the like. Some people hate it and argue for
-                        its demise, but others ignore.
-                                </p>
-                            </div>
-
-                            <div class="post">
-                                <div class="user-block">
-                                    <img class="img-circle img-sm" src="/Images/dist/minus-red.png" alt="user image">
-                                    <span class="username">
-                                        <a href="#">Jonathan Burke Jr.</a>
-                                    </span>
-                                    <span class="description">Shared publicly - 7:45 PM today</span>
-                                </div>
-                                <!-- /.user-block -->
-                                <p>
-                                    Lorem ipsum represents a long-held tradition for designers,
-                        typographers and the like. Some people hate it and argue for
-                        its demise, but others ignore.
-                                </p>
-                            </div>
-
-                            <div class="post">
-                                <div class="user-block">
-                                    <img class="img-circle img-sm" src="/Images/dist/done.png" alt="user image">
-                                    <span class="username">
-                                        <a href="#">Jonathan Burke Jr.</a>
-                                    </span>
-                                    <span class="description">Shared publicly - 7:45 PM today</span>
-                                </div>
-                                <!-- /.user-block -->
-                                <p>
-                                    Lorem ipsum represents a long-held tradition for designers,
-                        typographers and the like. Some people hate it and argue for
-                        its demise, but others ignore.
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,7 +62,7 @@
                     </div>
 
                     <div class="text-center mt-5 mb-3">
-                        <asp:Button class="btn btn-sm btn-warning" ID="btnDischarge" runat="server" Text="Discharge"/>
+                        <asp:Button class="btn btn-sm btn-warning" ID="btnDischarge" OnClick="btnDischarge_Click" runat="server" Text="Discharge"/>
                     </div>
                 </div>
             </div>

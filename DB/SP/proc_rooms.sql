@@ -53,7 +53,7 @@ SET XACT_ABORT ON
 		IF @id IS NULL
 		BEGIN  
 			SELECT 
-				 apm.id AS id
+				 apm.patient AS id
 				,CONCAT(CAST(b.room AS VARCHAR(10)),CONCAT('-',CAST(b.id AS VARCHAR(10)))) AS room
 				,ec.enumDetails AS roomType               
 				,p.fullname AS patient
