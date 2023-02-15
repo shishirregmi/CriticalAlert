@@ -64,6 +64,7 @@
                     <div class="text-center mt-5 mb-3">
                         <asp:Button class="btn btn-sm btn-warning" ID="btnDischarge" OnClick="btnDischarge_Click" runat="server" Text="Discharge"/>
                     </div>
+                    <asp:HiddenField id="hdnID" runat="server"/>
                 </div>
             </div>
         </div>

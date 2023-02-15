@@ -22,7 +22,7 @@ namespace Hospital.Management.Admission
         private void LoadData()
         {
             var res = _obj.GetPastPatients();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Completed Admitted Patient List", false, false, false, false, false);
+            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Completed Admitted Patient List", false, false, false, false, true, "/Management/Beds/View.aspx?id=");
         }
         protected void CheckAlert()
         {

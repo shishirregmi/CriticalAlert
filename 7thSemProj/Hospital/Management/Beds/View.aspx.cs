@@ -28,7 +28,7 @@ namespace Hospital.Management.Beds
             var res = _obj.GetPatient(id);
             var pd = res.Tables[0].Rows[0];
             var pl = res.Tables[1];
-            if (pd["dischargedOn"].ToString() != "-")
+            if (pd["id"].ToString() == "0")
                 btnDischarge.Visible = false;
             patientName.InnerText = pd["fullname"].ToString();
             address.InnerText = pd["patientAddress"].ToString();
@@ -37,7 +37,7 @@ namespace Hospital.Management.Beds
             bedno.InnerText = pd["bed"].ToString();
             gender.InnerText = pd["gender"].ToString();
             phone.InnerText = pd["phone"].ToString();
-
+            hdnID.Value = pd["id"].ToString();
             LoadLogs(pl);
         }
         public void LoadLogs(DataTable dt)
@@ -118,7 +118,7 @@ namespace Hospital.Management.Beds
             PostReq req = new PostReq()
             {
                 user = Session["username"].ToString(),
-                id = Request.QueryString["id"].ToString()
+                id = hdnID.Value
             };
             var res = _obj.MarkComplete(req);
             ShowAlert(res.ErrorCode, res.Msg);

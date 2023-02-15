@@ -44,7 +44,8 @@ END
 IF @flag = 'a'
 BEGIN	
 	SELECT TOP 1
-		 p.fullname																					AS fullname
+		 ISNULL(apm.id, '0')																		AS id
+		,p.fullname																					AS fullname
 		,p.phone																					AS phone
 		,ec.enumDetails																				AS gender
 		,CONCAT(pa.street,CONCAT(', ',CONCAT(pa.district,CONCAT(', ',pa.province))))				AS patientAddress
@@ -61,8 +62,14 @@ BEGIN
 	WHERE apm.patient = @id OR ap.patient = @id
 	ORDER BY ap.createdDate DESC
 
-	SELECT @patient = apm.patient FROM AdmitPatientMod apm 
-	WHERE apm.patient = @id
+	IF EXISTS(SELECT 'X' FROM AdmitPatientMod apm WHERE apm.patient = @id)
+		SELECT @patient = apm.patient 
+		FROM AdmitPatientMod apm 
+		WHERE apm.patient = @id
+	ELSE
+		SELECT @patient = ap.patient 
+		FROM AdmitPatient ap 
+		WHERE ap.patient = @id
 
 	SELECT logType='sl', sl.id,requestType = NULL,room = NULL,bed = NULL,eventTime = NULL,sl.activity,sl.tableName,sl.rowId,sl.errorCode,sl.errorMessage,patient = p.fullname,doctor = d.fullname,sl.createdBy,sl.createdDate
 	FROM SysLogs sl WITH(NOLOCK)
@@ -116,14 +123,18 @@ IF @flag = 'getpastpatients'
 			,'Patient Name' patient
 			,'Doctor Name' doctor
 			,'Description' details
+			,'Admitted Date' createdDate
+			,'Discharged Date' modifiedDate
 		
 		SELECT 
-			 apm.id AS id
+			 apm.patient AS id
 			,CONCAT(CAST(b.room AS VARCHAR(10)),CONCAT('-',CAST(b.id AS VARCHAR(10)))) AS room
 			,ec.enumDetails AS roomType               
 			,p.fullname AS patient
 			,d.fullname AS doctor
 			,apm.details AS details
+			,apm.createdDate AS createdDate
+			,apm.modifiedDate AS modifiedDate
 		FROM AdmitPatient apm WITH(NOLOCK)
 		LEFT JOIN Beds b ON apm.bed = b.id
 		LEFT JOIN Room r ON r.id = b.room	
