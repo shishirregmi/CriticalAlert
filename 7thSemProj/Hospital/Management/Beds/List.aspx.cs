@@ -2,6 +2,7 @@
 using DAL.Ref.Admit;
 using DAL.Ref.Room;
 using DAL.Utilities;
+using Hospital.Utils;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -12,12 +13,13 @@ namespace Hospital.Management.Beds
     {
         private readonly RoomDb _dao = new RoomDb();
         private readonly AdmitDb _obj = new AdmitDb();
+        private readonly string viewFunctionId = "20301000";
+        private readonly string addEditFunctionId = "20302000";
+        private readonly string deleteFunctionId = "20303000";
+        private readonly string dischargeFunctionId = "20304000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate(viewFunctionId);
             if (!IsPostBack)
             {
                 string input;
@@ -47,7 +49,7 @@ namespace Hospital.Management.Beds
             {
                 var id = Request.QueryString["id"].ToString();
                 var res = _dao.GetAllBed(id);
-                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Admitted Patient List for Room " + id, true, false, false, true, true);
+                rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Admitted Patient List for Room " + id, StaticUtils.CheckRole(addEditFunctionId), false, false, StaticUtils.CheckRole(dischargeFunctionId), StaticUtils.CheckRole(viewFunctionId));
             }
             else
             {

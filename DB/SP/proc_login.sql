@@ -22,7 +22,7 @@ BEGIN
 		BEGIN			
 			SELECT '0' errorCode, 'Login Successfull' msg, NULL id
 
-			SELECT U.id, U.fullname, U.username, U.email, ec.enumDetails AS	userRole 
+			SELECT U.id AS userId, U.fullname AS fullname, U.username AS username, U.email AS email, ec.enumDetails AS userRole 
 			FROM Users U WITH(NOLOCK)
 			LEFT JOIN EnumCollections ec ON U.userRole = ec.enumValue
 			WHERE U.username = @username

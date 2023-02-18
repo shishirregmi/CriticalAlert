@@ -6,10 +6,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER PROCEDURE [dbo].[proc_menu] (
-		 @id						VARCHAR(150)				= NULL
+		 @id						VARCHAR(15)					= NULL
 		,@title						VARCHAR(100)				= NULL
 		,@details					VARCHAR(500)				= NULL
 		,@user						VARCHAR(75)					= NULL
+		,@functionId				VARCHAR(8)					= NULL
 		,@link						VARCHAR(200)				= NULL
 		,@parentId					INT							= NULL	
 		,@flag						NVARCHAR(50)				= NULL
@@ -23,8 +24,8 @@ BEGIN
 	IF @flag = 'getAll'
 	BEGIN
 		SELECT 
-			SM.title
-			,(SELECT SSM.title, SSM.link FROM SidebarSubMenu SSM WHERE ISNULL(isdeleted,'N')<>'Y' AND SSM.parentId = SM.id FOR JSON AUTO) AS submenus
+			SM.title, SM.functionId
+			,(SELECT SSM.title, SSM.link, SSM.functionId FROM SidebarSubMenu SSM WHERE ISNULL(isdeleted,'N')<>'Y' AND SSM.parentId = SM.id FOR JSON AUTO) AS submenus
 			FROM SidebarMenu SM
 		WHERE ISNULL(isdeleted,'N') <> 'Y'
 		RETURN	
@@ -39,8 +40,8 @@ BEGIN
 			RETURN
 		END			
 		
-		INSERT INTO SidebarMenu(title,details,isdeleted,createdBy,createdDate)	
-		VALUES(@title,@details,'N',@user,GETDATE())
+		INSERT INTO SidebarMenu(title,details,functionId,isdeleted,createdBy,createdDate)	
+		VALUES(@title,@details,@functionId,'N',@user,GETDATE())
 
 		SELECT '0' errorCode, 'Menu added successfully' msg, SCOPE_IDENTITY() id
 		RETURN
@@ -55,8 +56,8 @@ BEGIN
 			RETURN
 		END			
 		
-		INSERT INTO SidebarSubMenu(title, details, parentId, link, isdeleted,createdBy,createdDate)	
-		VALUES(@title,@details,@parentId,@link ,'N',@user,GETDATE())
+		INSERT INTO SidebarSubMenu(title, details, functionId, parentId, link, isdeleted,createdBy,createdDate)	
+		VALUES(@title,@details,@functionId,@parentId,@link ,'N',@user,GETDATE())
 
 		SELECT '0' errorCode, 'Sub Menu added successfully' msg, SCOPE_IDENTITY() id
 		RETURN
@@ -72,7 +73,8 @@ BEGIN
 
 		Update SidebarMenu SET
 			 title				= @title	
-			,details			= @details		
+			,details			= @details	
+			,functionId			= @functionId
 			,modifiedBy			= @user
 			,modifiedDate		= GETDATE()
 		WHERE id = @id
@@ -93,6 +95,7 @@ BEGIN
 			 title				= @title	
 			,details			= @details
 			,parentId			= @parentId
+			,functionId			= @functionId
 			,link				= @link
 			,modifiedBy			= @user
 			,modifiedDate		= GETDATE()

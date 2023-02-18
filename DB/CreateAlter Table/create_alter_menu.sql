@@ -25,3 +25,9 @@ CREATE TABLE SidebarSubMenu(
 	,modifiedBy VARCHAR(75)
 	,modifiedDate DATETIME
 )
+
+ALTER TABLE SidebarMenu
+	ADD functionId VARCHAR(8) NULL 	
+
+ALTER TABLE SidebarSubMenu
+	ADD functionId VARCHAR(8) NULL

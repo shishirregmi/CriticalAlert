@@ -1,5 +1,6 @@
 ﻿using DAL.Ref.Admit;
 using DAL.Utilities;
+using Hospital.Utils;
 using System;
 
 namespace Hospital.Management.Admission
@@ -7,12 +8,12 @@ namespace Hospital.Management.Admission
     public partial class List : System.Web.UI.Page
     {
         private readonly AdmitDb _obj = new AdmitDb();
+        private readonly string viewFunctionId = "20401000";
+        private readonly string addEditFunctionId = "20402000";
+        private readonly string deleteFunctionId = "20403000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate(viewFunctionId);
             CheckAlert();
             if (!IsPostBack)
             {
@@ -22,7 +23,7 @@ namespace Hospital.Management.Admission
         private void LoadData()
         {
             var res = _obj.GetPastPatients();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Completed Admitted Patient List", false, false, false, false, true, "/Management/Beds/View.aspx?id=");
+            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Discharged Patient List", false, false, false, false, StaticUtils.CheckRole(viewFunctionId), "/Management/Beds/View.aspx?id=");
         }
         protected void CheckAlert()
         {

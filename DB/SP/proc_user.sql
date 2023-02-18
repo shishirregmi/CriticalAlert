@@ -40,8 +40,22 @@ SET XACT_ABORT ON
 
 	IF @flag='s'
 	BEGIN
-			SELECT id, fullname
-			FROM Users WITH(NOLOCK)		
+			SELECT 'ID' id
+				  ,'Full Name' fullname
+				  ,'Email' email
+				  ,'Username' username
+				  ,'User Type' userRole
+				  ,'Active' isactive
+
+			SELECT id			=	u.id
+				  ,fullname		=	u.fullname
+				  ,email		=	u.email
+				  ,username		=	u.username
+				  ,userRole		=	ec.enumDetails
+				  ,isactive		=	u.isactive
+			FROM Users u
+			LEFT JOIN EnumCollections ec ON ec.enumValue = u.userRole
+			WHERE ISNULL(u.isdeleted,'N')<>'Y'
 	END
 
 	IF @flag = 'i'

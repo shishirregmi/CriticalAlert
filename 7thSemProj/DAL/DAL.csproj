@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AdmitDetails.cs" />
+    <Compile Include="Common\RoleDetails.cs" />
     <Compile Include="Common\RoomDetails.cs" />
     <Compile Include="Common\PatientDetails.cs" />
     <Compile Include="Common\DoctorDetails.cs" />

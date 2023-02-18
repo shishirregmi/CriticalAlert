@@ -1,36 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Manage.aspx.cs" Inherits="Hospital.Patients.Manage" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <style>
-        .Slab {
-            display: flex;
-            flex-direction: row;
-        }
-
-        .addbtn img {
-            margin-top: 7px;
-            width: 20px;
-            height: auto;
-        }
-
-        .removebtn img {
-            margin-top: 7px;
-            width: 20px;
-            height: auto;
-        }
-
-        .has-error {
-            border-style: solid;
-            border-width: 1px;
-            border-color: red;
-            border-radius: 3px;
-        }
-
-        .Slab .form-group {
-            margin-right: 5px;
-            width: 15vw;
-        }
-    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container-fluid">

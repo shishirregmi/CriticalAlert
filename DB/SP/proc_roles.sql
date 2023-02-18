@@ -10,10 +10,11 @@ ALTER PROCEDURE [dbo].[proc_roles] (
 		,@userId			INT				= NULL
 		,@roleId			INT				= NULL
 		,@functionId		INT				= NULL
+		,@parentFunctionId	INT				= NULL
 		,@user				VARCHAR(75)		= NULL
 		,@details			VARCHAR(150)	= NULL
 
-		,@flag				VARCHAR(50)	= NULL
+		,@flag				VARCHAR(50)		= NULL
 		,@errorCode			VARCHAR(1)		= NULL
 		,@errorMessage		VARCHAR(MAX)	= NULL
 	)
@@ -42,26 +43,62 @@ END
 
 IF @flag = 'addFunctionId'
 BEGIN
-	IF EXISTS(SELECT 'X' FROM SystemRoles sr WHERE sr.functionId = @functionId AND sr.userId = @userId)
+	IF EXISTS(SELECT 'X' FROM SystemFunctions sf WHERE sf.functionId = @functionId)
 	BEGIN
 		SELECT '1' errorCode, 'Function Id already exists' msg, @userId id
 		RETURN
 	END
 
-	SET IDENTITY_INSERT SystemFunctions ON;
-	INSERT INTO SystemFunctions (id, details, isdeleted, isactive, createdBy, createdDate)
-	VALUES (@id, @details, 'N', 'Y', @user, GETDATE());
-	SET IDENTITY_INSERT SystemFunctions OFF;
+	INSERT INTO SystemFunctions (functionId, parentFunctionId, details, isdeleted, isactive, createdBy, createdDate)
+	VALUES (@functionId, @parentFunctionId, @details, 'N', 'Y', @user, GETDATE());
 
 	SELECT '0' errorCode, 'Function Id added Successfully' msg, @userId id
 END
 
 IF @flag = 'addSystemRoles'
 BEGIN
-	INSERT INTO SystemRoles (userId, functionId, isdeleted, isactive, createdBy, createdDate)
-	VALUES (@userId, @functionId, 'N', 'Y', @user, GETDATE());
+	IF EXISTS(SELECT 'X' FROM SystemRoles sr WHERE sr.functionId = @functionId AND sr.userId = @userId)
+	BEGIN
+		DELETE SystemRoles WHERE functionId = @functionId AND userId = @userId
+	END
+	ELSE
+	BEGIN
+		INSERT INTO SystemRoles (userId, functionId, isdeleted, isactive, createdBy, createdDate)
+		VALUES (@userId, @functionId, 'N', 'Y', @user, GETDATE());
+	END
+	SELECT '0' errorCode, 'System Role modified Successfully' msg, @userId id
+END
 
-	SELECT '0' errorCode, 'System Role added Successfully' msg, @userId id
+IF @flag = 'getSystemRoles'
+BEGIN
+	IF NOT EXISTS(SELECT * FROM Users u WHERE U.id=@userId) 
+    	RETURN
+    
+	SELECT
+		*, dbo.Fun_HasRight(@userId,sf.functionId) AS isAssigned
+	FROM SystemFunctions sf
+	WHERE sf.functionId LIKE '%0000000'
+END
+
+IF @flag = 'getSystemRolesPages'
+BEGIN
+	IF NOT EXISTS(SELECT * FROM Users u WHERE U.id=@userId) 
+    	RETURN
+	SELECT
+		*, dbo.Fun_HasRight(@userId,sf.functionId) AS isAssigned
+	FROM SystemFunctions sf
+	WHERE sf.parentFunctionId = @functionId AND sf.functionId LIKE '%00000' AND sf.functionId NOT LIKE '%0000000'
+END
+
+IF @flag = 'getSystemRolesSub'
+BEGIN
+	IF NOT EXISTS(SELECT * FROM Users u WHERE U.id=@userId) 
+    	RETURN
+	SELECT 
+		*, dbo.Fun_HasRight(@userId,sf.functionId) AS isAssigned
+	FROM SystemFunctions sf
+	WHERE sf.parentFunctionId = @functionId AND sf.functionId LIKE '%000' AND sf.functionId NOT LIKE '%00000'
+	
 END
 
 END TRY

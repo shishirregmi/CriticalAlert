@@ -2,6 +2,8 @@ USE HospitalManagement
 
 CREATE TABLE SystemFunctions(
 	 id	INT NOT NULL PRIMARY KEY IDENTITY(1,1)
+	,functionId VARCHAR(8)
+	,parentFunctionId VARCHAR(8)
 	,details VARCHAR(500)
 	,isdeleted CHAR(1)
 	,isactive CHAR(1)

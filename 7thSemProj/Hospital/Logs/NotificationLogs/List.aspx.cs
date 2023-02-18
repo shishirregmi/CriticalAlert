@@ -1,5 +1,6 @@
 ﻿using DAL.Ref.Logs;
 using DAL.Utilities;
+using Hospital.Utils;
 using System;
 
 namespace Hospital.Logs.NotificationLogs
@@ -7,12 +8,11 @@ namespace Hospital.Logs.NotificationLogs
     public partial class List : System.Web.UI.Page
     {
         private readonly LogDb _dao = new LogDb();
+        private readonly string viewFunctionId = "30201000";
+        private readonly string deleteFunctionId = "30202000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate();
             CheckAlert();
             if (!IsPostBack)
             {

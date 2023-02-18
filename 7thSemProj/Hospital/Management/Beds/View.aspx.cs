@@ -1,6 +1,6 @@
 ﻿using DAL.Common;
 using DAL.Ref.Admit;
-using Newtonsoft.Json;
+using Hospital.Utils;
 using System;
 using System.Data;
 using System.Text;
@@ -10,12 +10,10 @@ namespace Hospital.Management.Beds
     public partial class View : System.Web.UI.Page
     {
         private readonly AdmitDb _obj = new AdmitDb();
+        private readonly string viewFunctionId = "20301000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate();
             if (!IsPostBack)
             {
                 CheckAlert();

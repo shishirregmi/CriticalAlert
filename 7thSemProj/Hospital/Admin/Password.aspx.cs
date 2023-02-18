@@ -2,12 +2,8 @@
 using DAL.Common;
 using DAL.DAL;
 using DAL.Utilities;
+using Hospital.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Hospital.Admin
 {
@@ -17,10 +13,7 @@ namespace Hospital.Admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate();
             CheckAlert();
         }
         protected void btn_change_Click(object sender, EventArgs e)

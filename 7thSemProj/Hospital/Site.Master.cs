@@ -1,6 +1,7 @@
 ﻿using DAL.Common;
 using DAL.Ref.Components.Menu;
 using DAL.Ref.Logs;
+using DAL.Ref.Roles;
 using Newtonsoft.Json;
 using System;
 using System.Data;
@@ -13,6 +14,7 @@ namespace Hospital
     public partial class SiteMaster : MasterPage
     {
         private readonly MenuDb _dao = new MenuDb();
+        private readonly RolesDb _obj = new RolesDb();
         private readonly LogDb _ld = new LogDb();
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -34,7 +36,7 @@ namespace Hospital
                             switch (result.MethodName)
                             {
                                 case "saveNotification":
-                                    
+
                                     saveNotification(result);
                                     break;
                             }
@@ -44,7 +46,7 @@ namespace Hospital
                     fname.InnerText = Session["fullname"].ToString();
                 }
                 LoadMenu();
-                
+
             }
         }
 
@@ -63,7 +65,7 @@ namespace Hospital
                 eventTime = res["eventTime"].ToString(),
                 room = res["room"].ToString()
             };
-            var json = JsonConvert.SerializeObject(nlr);             
+            var json = JsonConvert.SerializeObject(nlr);
             Response.Write(json);
             Response.End();
         }
@@ -75,23 +77,32 @@ namespace Hospital
             sb.AppendLine("<ul class=\"nav nav-pills nav-sidebar flex-column\" data-widget=\"treeview\" role=\"menu\" data-accordion=\"false\">");
             foreach (DataRow dr in res.Rows)
             {
-                sb.AppendLine("<li class=\"nav-item\">");
-                sb.AppendLine("<a href=\"#\" class=\"nav-link\">");
-                sb.AppendLine("<p>" + dr["title"].ToString() + "<i class=\"right fas fa-angle-left\"></i></p>");
-                sb.AppendLine("</a>");
-                sb.AppendLine("<ul class=\"nav nav-treeview\">");
-                DataTable dt = JsonConvert.DeserializeObject<DataTable>(dr["submenus"].ToString());
-                foreach (DataRow drow in dt.Rows)
+                if (_obj.Checkrole(dr["functionId"].ToString(), Session["userId"].ToString()))
                 {
                     sb.AppendLine("<li class=\"nav-item\">");
-                    sb.AppendLine("<a href=\"" + drow["link"].ToString() + "\" class=\"nav-link\">");
-                    sb.AppendLine("<i class=\"fas fa-circle-sm nav-icon\"></i>");
-                    sb.AppendLine("<p>" + drow["title"].ToString() + "</p>");
+                    sb.AppendLine("<a href=\"#\" class=\"nav-link\">");
+                    sb.AppendLine("<p>" + dr["title"].ToString() + "<i class=\"right fas fa-angle-left\"></i></p>");
                     sb.AppendLine("</a>");
+                    sb.AppendLine("<ul class=\"nav nav-treeview\">");
+                    DataTable dt = JsonConvert.DeserializeObject<DataTable>(dr["submenus"].ToString());
+                    if (dt != null)
+                    {
+                        foreach (DataRow drow in dt.Rows)
+                        {
+                            if (_obj.Checkrole(drow["functionId"].ToString(), Session["userId"].ToString()))
+                            {
+                                sb.AppendLine("<li class=\"nav-item\">");
+                                sb.AppendLine("<a href=\"" + drow["link"].ToString() + "\" class=\"nav-link\">");
+                                sb.AppendLine("<i class=\"fas fa-circle-sm nav-icon\"></i>");
+                                sb.AppendLine("<p>" + drow["title"].ToString() + "</p>");
+                                sb.AppendLine("</a>");
+                                sb.AppendLine("</li>");
+                            }
+                        }
+                    }
+                    sb.AppendLine("</ul>");
                     sb.AppendLine("</li>");
                 }
-                sb.AppendLine("</ul>");
-                sb.AppendLine("</li>");
             }
             sb.AppendLine("</ul>");
             dynamicMenu.InnerHtml = sb.ToString();

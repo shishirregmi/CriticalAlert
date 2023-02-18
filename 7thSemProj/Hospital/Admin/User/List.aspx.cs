@@ -1,22 +1,25 @@
-﻿using DAL.Common;
-using DAL.Ref.Doctor;
+﻿using DAL.BL.User;
+using DAL.Common;
 using DAL.Utilities;
 using Hospital.Utils;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 
-namespace Hospital.Doctor
+namespace Hospital.Admin.User
 {
     public partial class List : System.Web.UI.Page
     {
-        private readonly DoctorDb _dao = new DoctorDb();
-        private readonly string viewFunctionId = "20101000";
-        private readonly string addEditFunctionId = "20102000";
-        private readonly string deleteFunctionId = "20103000";
+        private readonly UserDb _dao = new UserDb();
+        private readonly string viewFunctionId = "10101000";
+        private readonly string addFunctionId = "10102000";
+        private readonly string deleteFunctionId = "10103000";
+        private readonly string lockFunctionId = "10104000";
+        private readonly string rolesFunctionId = "10105000";
+        private readonly string editFunctionId = "10106000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            StaticUtils.Authenticate(addEditFunctionId);
+            StaticUtils.Authenticate(viewFunctionId);
             if (!IsPostBack)
             {
                 string input;
@@ -42,17 +45,17 @@ namespace Hospital.Doctor
         }
         private void LoadData()
         {
-            var res = _dao.GetDoctors();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res,"Doctors", StaticUtils.CheckRole(addEditFunctionId), StaticUtils.CheckRole(addEditFunctionId), StaticUtils.CheckRole(deleteFunctionId), false,false);
+            var res = _dao.GetUsers();
+            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Users", StaticUtils.CheckRole(addFunctionId), StaticUtils.CheckRole(editFunctionId), StaticUtils.CheckRole(deleteFunctionId), false, false,"", StaticUtils.CheckRole(lockFunctionId), StaticUtils.CheckRole(rolesFunctionId));
         }
         private void deleteData(PostReq req)
         {
-            var res = _dao.Delete(req);
-            ShowAlert(res.ErrorCode, res.Msg);
-            Response.ContentType = "text/plain";
-            var json = JsonConvert.SerializeObject(res);
-            Response.Write(json);
-            Response.End();
+            //var res = _dao.Delete(req);
+            //ShowAlert(res.ErrorCode, res.Msg);
+            //Response.ContentType = "text/plain";
+            //var json = JsonConvert.SerializeObject(res);
+            //Response.Write(json);
+            //Response.End();
         }
         protected void CheckAlert()
         {

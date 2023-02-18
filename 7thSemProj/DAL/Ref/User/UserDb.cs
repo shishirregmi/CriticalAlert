@@ -33,6 +33,13 @@ namespace DAL.BL.User
             return ParseDbResult(sql);
         }
 
+        public DataSet GetUsers()
+        {
+            var sql = " EXEC proc_user";
+            sql += "  @flag = 's'";
+            return ExecuteDataset(sql);
+        }
+
         //public DataRow PopulatebyId(RegistrationDetails details)
         //{
         //    var sql = " EXEC UserSetup";

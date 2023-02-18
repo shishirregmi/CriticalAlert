@@ -1,26 +1,22 @@
 ﻿using DAL.Common;
 using DAL.Ref.Room;
 using DAL.Utilities;
+using Hospital.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Hospital.Management.Rooms
 {
     public partial class List : System.Web.UI.Page
     {
         private readonly RoomDb _dao = new RoomDb();
+        private readonly string viewFunctionId = "20501000";
+        private readonly string addEditFunctionId = "20502000";
+        private readonly string deleteFunctionId = "20503000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate(viewFunctionId);
             if (!IsPostBack)
             {
                 string input;
@@ -47,7 +43,7 @@ namespace Hospital.Management.Rooms
         private void LoadData()
         {
             var res = _dao.GetAllRoom();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Room List", true, false, true, false, false);
+            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Room List", StaticUtils.CheckRole(addEditFunctionId), false, StaticUtils.CheckRole(deleteFunctionId), false, false);
         }
         private void deleteData(PostReq req)
         {

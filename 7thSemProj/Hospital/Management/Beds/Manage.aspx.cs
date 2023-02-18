@@ -12,12 +12,10 @@ namespace Hospital.Management.Beds
     {
         private readonly AdmitDb _dao = new AdmitDb();
         private readonly StaticDataDDL _ddl = new StaticDataDDL();
+        private readonly string addEditFunctionId = "20302000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate(addEditFunctionId);
             if (!IsPostBack)
             {
                 string method = Request.Form["Method"];

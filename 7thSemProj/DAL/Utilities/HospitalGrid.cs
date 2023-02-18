@@ -9,15 +9,19 @@ namespace DAL.Utilities
 {
     public static class HospitalGrid
     {
+        public static string CreateGrid(DataSet ds, string title, bool allowAdd, bool allowEdit, bool allowDelete, bool alllowApprove, bool allowView, string viewUrl, bool allowLock, bool allowRoleEdit)
+        {
+            return CreateGridFunction(ds, title, allowAdd, allowEdit, allowDelete, alllowApprove, allowView, viewUrl, allowLock, allowRoleEdit);
+        }
         public static string CreateGrid(DataSet ds, string title, bool allowAdd, bool allowEdit, bool allowDelete, bool alllowApprove, bool allowView, string viewUrl)
         {
-            return CreateGridFunction(ds, title, allowAdd, allowEdit, allowDelete, alllowApprove, allowView, viewUrl);
+            return CreateGridFunction(ds, title, allowAdd, allowEdit, allowDelete, alllowApprove, allowView, viewUrl, false, false);
         }
         public static string CreateGrid(DataSet ds, string title, bool allowAdd, bool allowEdit, bool allowDelete, bool alllowApprove, bool allowView)
         {
-            return CreateGridFunction(ds, title, allowAdd, allowEdit, allowDelete, alllowApprove, allowView, "");
+            return CreateGridFunction(ds, title, allowAdd, allowEdit, allowDelete, alllowApprove, allowView, "", false, false);
         }
-        public static string CreateGridFunction(DataSet ds, string title, bool allowAdd, bool allowEdit, bool allowDelete, bool alllowApprove, bool allowView, string viewUrl)
+        public static string CreateGridFunction(DataSet ds, string title, bool allowAdd, bool allowEdit, bool allowDelete, bool alllowApprove, bool allowView, string viewUrl, bool allowLock, bool allowRoleEdit)
         {
             if (ds != null)
             {
@@ -46,10 +50,10 @@ namespace DAL.Utilities
                     "<th>SN</th>");
                     foreach (string dc in drow.ItemArray)
                     {
-                        if(dc!="ID")
+                        if (dc != "ID")
                             sb.AppendLine("<th>" + dc + "</th>");
                     }
-                    if (allowEdit || allowDelete || alllowApprove || allowView)
+                    if (allowEdit || allowDelete || alllowApprove || allowView || allowLock || allowRoleEdit)
                         sb.AppendLine("<th></th>");
                     sb.AppendLine("</tr>" +
                 "</thead>" +
@@ -67,11 +71,11 @@ namespace DAL.Utilities
                             {
                                 sb.AppendLine("<td>" + col + "</td>");
                             }
-                            if (allowEdit || allowDelete || alllowApprove || allowView)
+                            if (allowEdit || allowDelete || alllowApprove || allowView || allowLock || allowRoleEdit)
                             {
                                 sb.AppendLine("<td>");
-                                if(allowEdit)
-                                  sb.AppendLine("<a title='Edit' href='Manage?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
+                                if (allowEdit)
+                                    sb.AppendLine("<a title='Edit' href='Manage?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
                                 if (allowView)
                                 {
                                     if (viewUrl == "")
@@ -80,10 +84,14 @@ namespace DAL.Utilities
                                         sb.AppendLine("<a title='View' href='" + viewUrl + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-eye fa-w-16 fa-1x'></i></a>");
 
                                 }
-                                if (allowDelete)
-                                    sb.AppendLine("&nbsp&nbsp<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i></a>");
                                 if (alllowApprove)
                                     sb.AppendLine("&nbsp&nbsp<a title='Discharge' href='javascript:void(null)' onclick=\"DoAction('C','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-success\"><i class='fa fa-check fa-w-16 fa-1x'></i></a>");
+                                if (allowLock)
+                                    sb.AppendLine("&nbsp&nbsp<a title='Lock' href='javascript:void(null)' onclick=\"DoAction('L','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-lock fa-w-16 fa-1x'></i></a>");
+                                if (allowRoleEdit)
+                                    sb.AppendLine("&nbsp&nbsp<a title='Edit Roles' href='Roles?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-cogs fa-w-16 fa-1x'></i></a>");
+                                if (allowDelete)
+                                    sb.AppendLine("&nbsp&nbsp<a title='Delete' href='javascript:void(null)' onclick=\"DoAction('D','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-trash fa-w-16 fa-1x'></i></a>");
                                 sb.AppendLine("</td>");
                             }
                             sb.AppendLine("</tr>");
@@ -98,7 +106,7 @@ namespace DAL.Utilities
                             if (dc != "ID")
                                 sb.AppendLine("<th>" + dc + "</th>");
                         }
-                        if (allowEdit || allowDelete || alllowApprove || allowView)
+                        if (allowEdit || allowDelete || alllowApprove || allowView || allowLock || allowRoleEdit)
                             sb.AppendLine("<th></th>");
                         sb.AppendLine("</tr>" +
                             "</tfoot>" +

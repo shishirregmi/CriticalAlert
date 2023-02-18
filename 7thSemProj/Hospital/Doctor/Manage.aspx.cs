@@ -1,17 +1,14 @@
 ﻿using DAL.Common;
 using DAL.DAL;
 using DAL.Ref.Doctor;
+using Hospital.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Xml.Serialization;
 
 namespace Hospital.Doctor
@@ -19,12 +16,10 @@ namespace Hospital.Doctor
     public partial class Manage : System.Web.UI.Page
     {
         private readonly DoctorDb _dao = new DoctorDb();
+        private readonly string addEditFunctionId = "20102000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["username"] == null)
-            {
-                Response.Redirect("/Default");
-            }
+            StaticUtils.Authenticate(addEditFunctionId);
             CheckAlert();
             if (!IsPostBack)
             {

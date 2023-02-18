@@ -41,6 +41,7 @@ namespace Hospital
             if(res.ErrorCode == "0")
             {
                 DataRow resVal = ds.Tables[1].Rows[0];
+                Session["userId"] = resVal["userId"];
                 Session["username"] = resVal["username"];
                 Session["fullname"] = resVal["fullname"];
                 Session["email"] = resVal["email"];
