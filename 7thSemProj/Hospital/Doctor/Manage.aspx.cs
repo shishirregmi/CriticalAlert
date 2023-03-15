@@ -7,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using System.Web;
 using System.Web.Script.Serialization;
-using System.Xml.Serialization;
 
 namespace Hospital.Doctor
 {
@@ -19,8 +17,8 @@ namespace Hospital.Doctor
         private readonly string addEditFunctionId = "20102000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            StaticUtils.Authenticate(addEditFunctionId);
-            CheckAlert();
+            Authenticate();
+            StaticUtils.CheckAlert(Page);
             if (!IsPostBack)
             {
                 string method = Request.Form["Method"];
@@ -93,46 +91,21 @@ namespace Hospital.Doctor
                 district = district,
                 street = street,
                 user = user
-            };            string ObjectToXML(object input)            {                try                {                    var stringwriter = new System.IO.StringWriter();                    var serializer = new XmlSerializer(input.GetType());                    serializer.Serialize(stringwriter, input);                    return stringwriter.ToString();                }                catch (Exception ex)                {                    if (ex.InnerException != null)                        ex = ex.InnerException;                    return "Could not convert: " + ex.Message;                }            }            string xml = ObjectToXML(qual);            DbResult dr = _dao.Save(docReq, docAddReq, xml);            ManageMessage(dr);            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
-        }
-        public string GetRowId()
-        {
-            return ReadQueryString("id", "0");
-        }
-        public static string ReadQueryString(string key, string defVal)
-        {
-            return HttpContext.Current.Request.QueryString[key] ?? defVal;
+            };            string xml = StaticUtils.ObjectToXML(qual);            DbResult dr = _dao.Save(docReq, docAddReq, xml);            ManageMessage(dr);            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
         }
         private void ManageMessage(DbResult dr)
         {
             if (dr.ErrorCode.Equals("0"))
-            {
-                Session["errorcode"] = dr.ErrorCode;
-                Session["msg"] = dr.Msg;
-            }
-            else
-            {
-                ShowAlert(dr.ErrorCode, dr.Msg);
-            }
+                StaticUtils.SetAlert(dr);
         }
-        protected void CheckAlert()
+        private void Authenticate()
         {
-            if (Session["errorcode"] != null)
-            {
-                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
-                Session["errorcode"] = null;
-                Session["msg"] = null;
-            }
+            StaticUtils.Authenticate(addEditFunctionId);
         }
-        private void ShowAlert(string errorcode, string msg)
+
+        public string GetRowId()
         {
-            var success = errorcode.Equals("0") ? "success" : "error";
-            var script = "Swal.fire({position: 'top-end'," +
-                    "icon: '" + success + "'," +
-                    "title: '" + msg + "'," +
-                    "showConfirmButton: false," +
-                    "timer: 1500})";
-            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
+            return StaticUtils.GetQueryString("id");
         }
     }
 }

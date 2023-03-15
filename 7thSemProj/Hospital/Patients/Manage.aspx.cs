@@ -16,7 +16,7 @@ namespace Hospital.Patients
         protected void Page_Load(object sender, EventArgs e)
         {
             StaticUtils.Authenticate(addEditFunctionId);
-            CheckAlert();
+            StaticUtils.CheckAlert(Page);
             if (!IsPostBack)
             {
                 string method = Request.Form["Method"];
@@ -56,46 +56,16 @@ namespace Hospital.Patients
                 district = district,
                 street = street,
                 user = user
-            };            DbResult dr = _dao.Save(docReq, docAddReq);            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
+            };            DbResult dr = _dao.Save(docReq, docAddReq);            dr.Extra = GetRowId();            Response.ContentType = "text/plain";            var json = JsonConvert.SerializeObject(dr);            Response.Write(json);            Response.End();
         }
         public string GetRowId()
         {
-            return ReadQueryString("id", "0");
-        }
-        public static string ReadQueryString(string key, string defVal)
-        {
-            return HttpContext.Current.Request.QueryString[key] ?? defVal;
+            return StaticUtils.GetQueryString("id");
         }
         private void ManageMessage(DbResult dr)
         {
             if (dr.ErrorCode.Equals("0"))
-            {
-                Session["errorcode"] = dr.ErrorCode;
-                Session["msg"] = dr.Msg;
-            }
-            else
-            {
-                ShowAlert(dr.ErrorCode, dr.Msg);
-            }
-        }
-        protected void CheckAlert()
-        {
-            if (Session["errorcode"] != null)
-            {
-                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
-                Session["errorcode"] = null;
-                Session["msg"] = null;
-            }
-        }
-        private void ShowAlert(string errorcode, string msg)
-        {
-            var success = errorcode.Equals("0") ? "success" : "error";
-            var script = "Swal.fire({position: 'top-end'," +
-                    "icon: '" + success + "'," +
-                    "title: '" + msg + "'," +
-                    "showConfirmButton: false," +
-                    "timer: 1500})";
-            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
+                StaticUtils.SetAlert(dr);
         }
     }
 }

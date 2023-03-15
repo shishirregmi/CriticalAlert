@@ -23,6 +23,10 @@
             justify-content: end;
         }
 
+        .swal2-popup.swal2-toast {
+            background: #343a40 !important;
+        }
+
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus,
@@ -35,12 +39,14 @@
             border: 1px solid #ced4da;
             -webkit-box-shadow: 0 0 0px 1000px #343a40 inset;
         }
-        .select2-container--default .select2-selection--single{
-            background-color: #343a40!important;
+
+        .select2-container--default .select2-selection--single {
+            background-color: #343a40 !important;
         }
-        .select2-container--default .select2-selection--single .select2-selection__rendered{
-            color:white!important;
-        }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                color: white !important;
+            }
     </style>
 
     <!-- Google Font: Source Sans Pro -->
@@ -70,11 +76,22 @@
     <link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
+    <link rel="stylesheet" href="~/Scripts/alert.js" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.all.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.js" integrity="sha512-rwu37NnL8piEGiFhe2c5j4GahN+gFsIn9k/0hkRY44iz0pc81tBNaUN56qF8X4fy+5pgAAgYi2C9FXdetne5sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <%--<script src="/Scripts/script.js"></script>--%>
+    <script>
+        function onlyNumberKey(evt) {
+            // Only ASCII character in that range allowed
+            var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                return false;
+            return true;
+        }
+    </script>
     <script>
         const connectionOptions = {
             "force new connection": true,
@@ -104,6 +121,7 @@
         });
 
         function ShowAlert(data) {
+            debugger;
             Swal.fire({
                 title: '<strong>Emergency in ' + data.room + '</strong>',
                 icon: 'info',
@@ -117,10 +135,14 @@
                 confirmButtonAriaLabel: 'View',
                 cancelButtonText: 'Close',
                 cancelButtonAriaLabel: 'Close'
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    window.location = "/Management/Beds/View?id=" + data.admitId;
+                }
             })
         }
         function AddNotification(data) {
-            debugger;
             var dataToSend = { MethodName: "saveNotification", data: JSON.stringify(data) };
             $.ajax({
                 type: 'POST',
@@ -135,6 +157,38 @@
                     console.log(error);
                 }
             });
+        };
+        
+    </script>
+    <script>
+        function ShowSystemAlert(Msg, ErrorCode) {
+            var toastMixin = Swal.mixin({
+                toast: true,
+                icon: 'success',
+                title: Msg,
+                animation: false,
+                position: 'top-right',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            if (ErrorCode == '0') {
+                toastMixin.fire({
+                    animation: true,
+                    title: Msg
+                });
+            }
+            else {
+                toastMixin.fire({
+                    animation: true,
+                    title: Msg,
+                    icon: 'error'
+                });
+            }
         };
     </script>
 </head>

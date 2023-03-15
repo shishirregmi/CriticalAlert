@@ -32,6 +32,9 @@ namespace Hospital.Management.Rooms
                                 result.user = Session["username"].ToString();
                                 deleteData(result);
                                 break;
+                            case "saveNotification":
+                                StaticUtils.saveNotification(Page, result);
+                                break;
                         }
                         return;
                     }

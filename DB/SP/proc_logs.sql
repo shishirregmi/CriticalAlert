@@ -76,7 +76,7 @@ SET XACT_ABORT ON
 			 @bed = apm.bed
 			,@patient = apm.patient
 			,@doctor = apm.doctor
-		FROM AdmitPatientMod apm
+		FROM AdmitPatientMod apm WITH(NOLOCK)
 		WHERE apm.bed = @bed
 		
 		BEGIN TRANSACTION
@@ -93,8 +93,10 @@ SET XACT_ABORT ON
 			,nl.eventTime AS eventTime
 			,p.fullname AS patient
 			,d.fullname AS doctor
-		FROM NotificationLogs nl
+			,apm.id AS admitId
+		FROM NotificationLogs nl WITH(NOLOCK)
 		LEFT JOIN Beds b ON nl.bed = b.id
+		LEFT JOIN AdmitPatientMod apm ON apm.patient = nl.patient
 		LEFT JOIN Patients p ON p.id = nl.patient
 		LEFT JOIN Doctors d ON d.id = nl.doctor
 		LEFT JOIN EnumCollections ec ON ec.enumValue = nl.requestType

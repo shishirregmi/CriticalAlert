@@ -3,7 +3,9 @@ using DAL.Common;
 using DAL.DAL;
 using DAL.Utilities;
 using Hospital.Utils;
+using Newtonsoft.Json;
 using System;
+using System.IO;
 
 namespace Hospital.Admin
 {
@@ -13,8 +15,27 @@ namespace Hospital.Admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            StaticUtils.Authenticate();
-            CheckAlert();
+            Authenticate();
+            if (!IsPostBack)
+            {
+                string input;
+                using (var reader = new StreamReader(Request.InputStream))
+                {
+                    input = reader.ReadToEnd();
+                    if (!string.IsNullOrEmpty(input))
+                    {
+                        PostReq result = JsonConvert.DeserializeObject<PostReq>(input);
+                        switch (result.MethodName)
+                        {
+                            case "saveNotification":
+                                StaticUtils.saveNotification(Page, result);
+                                break;
+                        }
+                        return;
+                    }
+                }
+            }
+            StaticUtils.CheckAlert(Page);
         }
         protected void btn_change_Click(object sender, EventArgs e)
         {
@@ -35,33 +56,18 @@ namespace Hospital.Admin
         {
             if (dr.ErrorCode.Equals("0"))
             {
-                Session["errorcode"] = dr.ErrorCode;
-                Session["msg"] = dr.Msg;
+                StaticUtils.SetAlert(dr);
                 Response.Redirect("/Home");
             }
             else
             {
-                ShowAlert(dr.ErrorCode,dr.Msg);
+                StaticUtils.ShowAlert(Page,dr.ErrorCode,dr.Msg);
             }
         }
-        protected void CheckAlert()
+
+        private void Authenticate()
         {
-            if (Session["errorcode"] != null)
-            {
-                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
-                Session["errorcode"] = null;
-                Session["msg"] = null;
-            }
-        }
-        private void ShowAlert(string errorcode, string msg)
-        {
-            var success = errorcode.Equals("0") ? "success" : "error";
-            var script = "Swal.fire({position: 'top-end'," +
-                    "icon: '" + success + "'," +
-                    "title: '" + msg + "'," +
-                    "showConfirmButton: false," +
-                    "timer: 1500})";
-            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
+            StaticUtils.Authenticate();
         }
     }
 }

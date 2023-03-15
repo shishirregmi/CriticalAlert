@@ -140,6 +140,7 @@
     <Content Include="Management\Rooms\Manage.aspx" />
     <Content Include="Patients\List.aspx" />
     <Content Include="Patients\Manage.aspx" />
+    <Content Include="Scripts\alert.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />

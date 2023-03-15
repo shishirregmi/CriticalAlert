@@ -28,5 +28,6 @@ namespace DAL.Common
         public string patient { get; set; }
         public string doctor { get; set; }
         public string room { get; set; }
+        public string admitId { get; set; }
     }
 }

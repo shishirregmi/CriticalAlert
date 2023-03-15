@@ -1,8 +1,10 @@
 ﻿using DAL.Common;
 using DAL.Ref.Admit;
 using Hospital.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Data;
+using System.IO;
 using System.Text;
 
 namespace Hospital.Management.Beds
@@ -13,10 +15,26 @@ namespace Hospital.Management.Beds
         private readonly string viewFunctionId = "20301000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            StaticUtils.Authenticate();
+            StaticUtils.Authenticate(viewFunctionId);
+            StaticUtils.CheckAlert(Page);
             if (!IsPostBack)
             {
-                CheckAlert();
+                string input;
+                using (var reader = new StreamReader(Request.InputStream))
+                {
+                    input = reader.ReadToEnd();
+                    if (!string.IsNullOrEmpty(input))
+                    {
+                        PostReq result = JsonConvert.DeserializeObject<PostReq>(input);
+                        switch (result.MethodName)
+                        {
+                            case "saveNotification":
+                                StaticUtils.saveNotification(Page, result);
+                                break;
+                        }
+                        return;
+                    }
+                }
                 LoadData();
             }
         }
@@ -91,26 +109,6 @@ namespace Hospital.Management.Beds
             }
             patientLogs.InnerHtml += sb.ToString();
         }
-        protected void CheckAlert()
-        {
-            if (Session["errorcode"] != null)
-            {
-                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
-                Session["errorcode"] = null;
-                Session["msg"] = null;
-            }
-        }
-        private void ShowAlert(string errorcode, string msg)
-        {
-            var success = errorcode.Equals("0") ? "success" : "error";
-            var script = "Swal.fire({position: 'top-end'," +
-                    "icon: '" + success + "'," +
-                    "title: '" + msg + "'," +
-                    "showConfirmButton: false," +
-                    "timer: 1500})";
-            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
-        }
-
         protected void btnDischarge_Click(object sender, EventArgs e)
         {
             PostReq req = new PostReq()
@@ -119,7 +117,7 @@ namespace Hospital.Management.Beds
                 id = hdnID.Value
             };
             var res = _obj.MarkComplete(req);
-            ShowAlert(res.ErrorCode, res.Msg);
+            StaticUtils.ShowAlert(Page, res.ErrorCode, res.Msg);
             LoadData();
         }
     }

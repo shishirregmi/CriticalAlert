@@ -20,7 +20,7 @@
                             </div>
                             <div class="form-group ">
                                 <label for="mobile">Phone Number</label>
-                                <asp:TextBox runat="server" placeholder="Phone Number" required="true" MaxLength="10" Type="Number" class="form-control" ID="mobile"></asp:TextBox>
+                                <asp:TextBox runat="server" placeholder="Phone Number" required="true" MaxLength="10" onkeypress="return onlyNumberKey(event)" pattern="^[0-9]*$" class="form-control" ID="mobile"></asp:TextBox>
                             </div>
                             <div class="form-group ">
                                 <label for="mobile">Gender</label>
@@ -68,6 +68,7 @@
                     gender: gender,
                     province: province,
                     district: district,
-                    street: street,                },                success: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes == "0") {                            window.location = "/Management/Beds/Manage.aspx";                        }                    }                },                error: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes != "0") {                            alert(response.Msg);                        }                    }                }            });        }
+                    street: street,                },                success: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes == "0") {                            if (response.Extra == '0')                                window.location = "/Management/Beds/Manage.aspx";                            else                                window.location = "List.aspx";                        } else {                            ShowSystemAlert(response.ErrorCode, response.Msg)
+                        }                    }                },                error: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes != "0") {                            alert(response.Msg);                        }                    }                }            });        }
     </script>
 </asp:Content>

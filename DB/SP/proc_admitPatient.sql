@@ -43,6 +43,15 @@ END
 
 IF @flag = 'a'
 BEGIN	
+	IF EXISTS(SELECT 'X' FROM AdmitPatientMod apm WHERE apm.id = @id)
+		SELECT @patient = apm.patient 
+		FROM AdmitPatientMod apm 
+		WHERE apm.id = @id
+	ELSE
+		SELECT @patient = ap.patient 
+		FROM AdmitPatient ap 
+		WHERE ap.id = @id
+
 	SELECT TOP 1
 		 ISNULL(apm.id, '0')																		AS id
 		,p.fullname																					AS fullname
@@ -59,17 +68,8 @@ BEGIN
 	LEFT JOIN AdmitPatientMod apm ON p.id = apm.patient
 	LEFT JOIN EnumCollections ec1 ON ec1.enumValue = ap.[type]
 	LEFT JOIN Beds b ON b.id = apm.bed
-	WHERE apm.patient = @id OR ap.patient = @id
+	WHERE p.id = @patient
 	ORDER BY ap.createdDate DESC
-
-	IF EXISTS(SELECT 'X' FROM AdmitPatientMod apm WHERE apm.patient = @id)
-		SELECT @patient = apm.patient 
-		FROM AdmitPatientMod apm 
-		WHERE apm.patient = @id
-	ELSE
-		SELECT @patient = ap.patient 
-		FROM AdmitPatient ap 
-		WHERE ap.patient = @id
 
 	SELECT logType='sl', sl.id,requestType = NULL,room = NULL,bed = NULL,eventTime = NULL,sl.activity,sl.tableName,sl.rowId,sl.errorCode,sl.errorMessage,patient = p.fullname,doctor = d.fullname,sl.createdBy,sl.createdDate
 	FROM SysLogs sl WITH(NOLOCK)

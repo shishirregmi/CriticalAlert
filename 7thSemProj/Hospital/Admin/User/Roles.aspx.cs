@@ -1,4 +1,5 @@
 ﻿using DAL.Common;
+using DAL.DAL;
 using DAL.Ref.Roles;
 using Hospital.Utils;
 using Newtonsoft.Json;
@@ -16,7 +17,8 @@ namespace Hospital.Admin.User
         private readonly string rolesFunctionId = "10105000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            StaticUtils.Authenticate(rolesFunctionId);
+            Authenticate();
+            StaticUtils.CheckAlert(Page);
             if (!IsPostBack)
             {
                 string input;
@@ -32,11 +34,13 @@ namespace Hospital.Admin.User
                                 result.user = Session["username"].ToString();
                                 markComplete(result);
                                 break;
+                            case "saveNotification":
+                                StaticUtils.saveNotification(Page, result);
+                                break;
                         }
                         return;
                     }
                 }
-                CheckAlert();
                 LoadData();
             }
         }
@@ -109,39 +113,25 @@ namespace Hospital.Admin.User
         }
         private void markComplete(PostReq req)
         {
-            var res = _dao.AssignRole(req);
-            ShowAlert(res.ErrorCode, res.Msg);
+            DbResult dr = _dao.AssignRole(req);
+            ManageMessage(dr);
             Response.ContentType = "text/plain";
-            var json = JsonConvert.SerializeObject(res);
+            var json = JsonConvert.SerializeObject(dr);
             Response.Write(json);
             Response.End();
         }
-        protected void CheckAlert()
+        private void ManageMessage(DbResult dr)
         {
-            if (Session["errorcode"] != null)
-            {
-                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
-                Session["errorcode"] = null;
-                Session["msg"] = null;
-            }
+            if (dr.ErrorCode.Equals("0"))
+                StaticUtils.SetAlert(dr);
         }
-        private void ShowAlert(string errorcode, string msg)
+        private void Authenticate()
         {
-            var success = errorcode.Equals("0") ? "success" : "error";
-            var script = "Swal.fire({position: 'top-end'," +
-                    "icon: '" + success + "'," +
-                    "title: '" + msg + "'," +
-                    "showConfirmButton: false," +
-                    "timer: 1500})";
-            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
+            StaticUtils.Authenticate(rolesFunctionId);
         }
         public string GetRowId()
         {
-            return ReadQueryString("id", "0");
-        }
-        public static string ReadQueryString(string key, string defVal)
-        {
-            return HttpContext.Current.Request.QueryString[key] ?? defVal;
+            return StaticUtils.GetQueryString("id");
         }
     }
 }

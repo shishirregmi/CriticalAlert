@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Manage.aspx.cs" Inherits="Hospital.Management.Beds.Manage" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -25,11 +26,11 @@
                                 <label for="capacity">Bed</label>
                                 <asp:DropDownList ID="ddlBed" runat="server" required="true" class="form-control select2"></asp:DropDownList>
                             </div>
-                             <div class="form-group" runat="server">
+                            <div class="form-group" runat="server">
                                 <label for="capacity">Type</label>
                                 <asp:DropDownList ID="ddlType" runat="server" required="true" class="form-control"></asp:DropDownList>
                             </div>
-                             <div class="form-group" runat="server">
+                            <div class="form-group" runat="server">
                                 <label for="capacity">Details</label>
                                 <asp:TextBox ID="details" runat="server" required="true" class="form-control" mode="multiline"> </asp:TextBox>
                             </div>
@@ -50,6 +51,7 @@
         var SaveAll = function () {            var res = confirm("Confirm To Save ?")            if (!res) {                return;            }            var patient = $('#MainContent_ddlPatient').val();            var doctor = $('#MainContent_ddlDoctor').val();            var bed = $('#MainContent_ddlBed').val();            var type = $('#MainContent_ddlType').val();            var details = $('#MainContent_details').val();            var detail = $.ajax({                type: "POST",
                 dataType: 'JSON',
                 data: {                    Method: "SaveData",                    patient: patient,
-                    doctor: doctor,                    bed: bed,                    type: type,                    details:details                },                success: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes == "0") {                            window.location = "List.aspx";                        }                    }                },                error: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes != "0") {                            alert(response.Msg);                        }                    }                }            });        }
+                    doctor: doctor,                    bed: bed,                    type: type,                    details: details                },                success: function (response) {                    if (response) {                        var res = response.ErrorCode;                        if (res == "0") {                            window.location = "List.aspx";                        } else {                            ShowSystemAlert(response.ErrorCode, response.Msg)
+                        }                    }                },                error: function (response) {                    if (response) {                        var fundingRes = response.ErrorCode;                        if (fundingRes != "0") {                            alert(response.Msg);                        }                    }                }            });        }
     </script>
 </asp:Content>

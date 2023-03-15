@@ -1,4 +1,5 @@
 ﻿using DAL.Common;
+using DAL.DAL;
 using DAL.Ref.Admit;
 using DAL.Ref.Room;
 using DAL.Utilities;
@@ -35,12 +36,15 @@ namespace Hospital.Management.Beds
                                 result.user = Session["username"].ToString();
                                 markComplete(result);
                                 break;
+                            case "saveNotification":
+                                StaticUtils.saveNotification(Page, result);
+                                break;
                         }
                         return;
                     }
                 }
-                CheckAlert();
                 LoadData();
+                StaticUtils.CheckAlert(Page);
             }
         }
         private void LoadData()
@@ -60,30 +64,15 @@ namespace Hospital.Management.Beds
         private void markComplete(PostReq req)
         {
             var res = _obj.MarkComplete(req);
-            ShowAlert(res.ErrorCode, res.Msg);
+            ManageMessage(res);
             Response.ContentType = "text/plain";
             var json = JsonConvert.SerializeObject(res);
             Response.Write(json);
             Response.End();
         }
-        protected void CheckAlert()
+        private void ManageMessage(DbResult dr)
         {
-            if (Session["errorcode"] != null)
-            {
-                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
-                Session["errorcode"] = null;
-                Session["msg"] = null;
-            }
-        }
-        private void ShowAlert(string errorcode, string msg)
-        {
-            var success = errorcode.Equals("0") ? "success" : "error";
-            var script = "Swal.fire({position: 'top-end'," +
-                    "icon: '" + success + "'," +
-                    "title: '" + msg + "'," +
-                    "showConfirmButton: false," +
-                    "timer: 1500})";
-            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
+            StaticUtils.SetAlert(dr);
         }
     }
 }

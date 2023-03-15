@@ -1,4 +1,5 @@
 ﻿using DAL.Common;
+using DAL.DAL;
 using DAL.Ref.Doctor;
 using DAL.Utilities;
 using Hospital.Utils;
@@ -16,7 +17,8 @@ namespace Hospital.Doctor
         private readonly string deleteFunctionId = "20103000";
         protected void Page_Load(object sender, EventArgs e)
         {
-            StaticUtils.Authenticate(addEditFunctionId);
+            Authenticate();
+            StaticUtils.CheckAlert(Page);
             if (!IsPostBack)
             {
                 string input;
@@ -32,46 +34,37 @@ namespace Hospital.Doctor
                                 result.user = Session["username"].ToString();
                                 deleteData(result);
                                 break;
+                            case "saveNotification":
+                                StaticUtils.saveNotification(Page, result);
+                                break;
                         }
                         return;
                     }
                 }
-                CheckAlert();
                 LoadData();
             }
         }
         private void LoadData()
         {
             var res = _dao.GetDoctors();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res,"Doctors", StaticUtils.CheckRole(addEditFunctionId), StaticUtils.CheckRole(addEditFunctionId), StaticUtils.CheckRole(deleteFunctionId), false,false);
+            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Doctors", StaticUtils.CheckRole(addEditFunctionId), StaticUtils.CheckRole(addEditFunctionId), StaticUtils.CheckRole(deleteFunctionId), false, false);
         }
         private void deleteData(PostReq req)
         {
             var res = _dao.Delete(req);
-            ShowAlert(res.ErrorCode, res.Msg);
+            ManageMessage(res);
             Response.ContentType = "text/plain";
             var json = JsonConvert.SerializeObject(res);
             Response.Write(json);
             Response.End();
         }
-        protected void CheckAlert()
+        private void ManageMessage(DbResult dr)
         {
-            if (Session["errorcode"] != null)
-            {
-                ShowAlert(Session["errorcode"].ToString(), Session["msg"].ToString());
-                Session["errorcode"] = null;
-                Session["msg"] = null;
-            }
+            StaticUtils.SetAlert(dr);
         }
-        private void ShowAlert(string errorcode, string msg)
+        private void Authenticate()
         {
-            var success = errorcode.Equals("0") ? "success" : "error";
-            var script = "Swal.fire({position: 'top-end'," +
-                    "icon: '" + success + "'," +
-                    "title: '" + msg + "'," +
-                    "showConfirmButton: false," +
-                    "timer: 1500})";
-            ClientScript.RegisterStartupScript(this.GetType(), "", script, true);
+            StaticUtils.Authenticate(viewFunctionId);
         }
     }
 }

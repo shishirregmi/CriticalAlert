@@ -63,7 +63,8 @@ namespace Hospital
                 doctor = res["doctor"].ToString(),
                 patient = res["patient"].ToString(),
                 eventTime = res["eventTime"].ToString(),
-                room = res["room"].ToString()
+                room = res["room"].ToString(),
+                admitId = res["admitId"].ToString()
             };
             var json = JsonConvert.SerializeObject(nlr);
             Response.Write(json);
