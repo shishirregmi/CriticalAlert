@@ -20,6 +20,12 @@ BEGIN
 
 		IF EXISTS(SELECT 'x' FROM Users WHERE username = @username AND pass = @pass)
 		BEGIN			
+			IF EXISTS(SELECT 'x' FROM Users WHERE username = @username AND pass = @pass AND ISNULL(isactive,'Y')<>'Y') 
+			BEGIN  
+            	SELECT '1' errorCode, 'User Locked' msg, NULL id
+				RETURN
+            END
+            
 			SELECT '0' errorCode, 'Login Successfull' msg, NULL id
 
 			SELECT U.id AS userId, U.fullname AS fullname, U.username AS username, U.email AS email, ec.enumDetails AS userRole 

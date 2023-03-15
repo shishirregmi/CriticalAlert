@@ -6,7 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER PROCEDURE [dbo].[proc_user] (
-		 @id						INT							= NULL
+		 @id						VARCHAR(5)					= NULL
 		,@fullname					VARCHAR(150)				= NULL
 		,@email						VARCHAR(100)				= NULL
 		,@username					VARCHAR(75)					= NULL
@@ -17,6 +17,7 @@ ALTER PROCEDURE [dbo].[proc_user] (
 		,@pass1						VARCHAR(100)				= NULL
 		,@pass2						VARCHAR(100)				= NULL
 		,@flag						NVARCHAR(50)				= NULL
+		,@isActive					VARCHAR(1)					= NULL
 		,@errorCode					VARCHAR(1)					= NULL
 		,@errorMessage				VARCHAR(MAX)				= NULL
 	)
@@ -38,29 +39,42 @@ SET XACT_ABORT ON
 		RETURN
 	END
 
+	IF @flag = 'ddl-role'
+	BEGIN
+		SELECT ec.enumvalue, ec.enumDetails 
+		FROM EnumCollections ec WITH(NOLOCK)
+		WHERE ec.enumParent = 'Roles'
+	END
+
 	IF @flag='s'
 	BEGIN
-			SELECT 'ID' id
-				  ,'Full Name' fullname
-				  ,'Email' email
-				  ,'Username' username
-				  ,'User Type' userRole
-				  ,'Active' isactive
+		SELECT 'ID' id
+				,'Full Name' fullname
+				,'Email' email
+				,'Username' username
+				,'User Type' userRole
+				,'Active' isactive
 
-			SELECT id			=	u.id
-				  ,fullname		=	u.fullname
-				  ,email		=	u.email
-				  ,username		=	u.username
-				  ,userRole		=	ec.enumDetails
-				  ,isactive		=	u.isactive
-			FROM Users u
-			LEFT JOIN EnumCollections ec ON ec.enumValue = u.userRole
-			WHERE ISNULL(u.isdeleted,'N')<>'Y'
+		SELECT  id		  = u.id
+				,fullname = u.fullname
+				,email	  = u.email
+				,username = u.username
+				,userRole = ec.enumDetails
+				,isactive = u.isactive
+		FROM Users u
+		LEFT JOIN EnumCollections ec ON ec.enumValue = u.userRole
+		WHERE ISNULL(u.isdeleted,'N')<>'Y'
+	END
+
+	IF @flag='a'
+	BEGIN
+		SELECT u.id,u.fullname,u.email,u.username,u.userRole
+		FROM Users u WITH(NOLOCK)
+		WHERE ISNULL(u.isdeleted,'N')<>'Y' AND u.id=@id
 	END
 
 	IF @flag = 'i'
 	BEGIN
-		
 		IF EXISTS (SELECT 'X' FROM Users WITH(NOLOCK) WHERE username = @username)
 		BEGIN
 			SELECT '1' errorCode, 'Username already in use' msg, NULL id
@@ -74,27 +88,8 @@ SET XACT_ABORT ON
 
 		BEGIN TRANSACTION
 
-		INSERT INTO Users(
-			 fullname	
-			,email		
-			,username	
-			,pass		
-			,userRole	
-			,isactive
-			,isdeleted
-			,createdbBy		
-			,createdDate)
-		VALUES(			
-			@fullname	
-			,@email		
-			,@username	
-			,@pass		
-			,@userRole	
-			,'Y'
-			,'N'
-			,@User	
-			,GETDATE()	
-			)
+		INSERT INTO Users(fullname,email,username,pass,userRole,isactive,isdeleted,createdbBy,createdDate)
+		VALUES(@fullname,@email,@username,'t8Arfe8ltKPp66CydlaF4ZhHsTmG7sdnj8DD9ZfpP58=',@userRole,'Y','N',@User,GETDATE())
 
 		COMMIT TRANSACTION
 
@@ -171,6 +166,32 @@ SET XACT_ABORT ON
 			RETURN
 		END	
 		
+	END
+
+	IF @flag = 'reset-pass'
+	BEGIN
+	    UPDATE Users
+		SET pass = 't8Arfe8ltKPp66CydlaF4ZhHsTmG7sdnj8DD9ZfpP58='
+		WHERE id = @id
+
+		SELECT '0' errorCode, 'Password reset successfully' msg, NULL
+
+		RETURN
+	END
+
+	IF @flag = 'lock-user'
+	BEGIN
+	    SELECT @isActive = isActive 
+		FROM Users u WITH(NOLOCK)
+		WHERE u.id = @id
+
+		UPDATE Users 
+		SET isactive = CASE WHEN ISNULL(@isActive,'Y') = 'Y' THEN 'N' ELSE 'Y' END
+		WHERE id = @id AND isactive = 'N'
+		
+		SELECT '0' errorCode, 'User Locked Successfully' msg, NULL
+
+		RETURN
 	END
 END TRY
 BEGIN CATCH

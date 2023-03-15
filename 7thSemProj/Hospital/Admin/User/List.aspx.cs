@@ -34,7 +34,15 @@ namespace Hospital.Admin.User
                         {
                             case "deletedata":
                                 result.user = Session["username"].ToString();
-                                deleteData(result);
+                                DeleteData(result);
+                                break;
+                            case "lockuser":
+                                result.user = Session["username"].ToString();
+                                LockUser(result);
+                                break;
+                            case "resetpass":
+                                result.user = Session["username"].ToString();
+                                ResetPass(result);
                                 break;
                             case "saveNotification":
                                 StaticUtils.saveNotification(Page, result);
@@ -49,9 +57,9 @@ namespace Hospital.Admin.User
         private void LoadData()
         {
             var res = _dao.GetUsers();
-            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Users", StaticUtils.CheckRole(addFunctionId), StaticUtils.CheckRole(editFunctionId), StaticUtils.CheckRole(deleteFunctionId), false, false,"", StaticUtils.CheckRole(lockFunctionId), StaticUtils.CheckRole(rolesFunctionId));
+            rptGrid.InnerHtml = HospitalGrid.CreateGrid(res, "Users", StaticUtils.CheckRole(addFunctionId), StaticUtils.CheckRole(editFunctionId), StaticUtils.CheckRole(deleteFunctionId), false, false, "", StaticUtils.CheckRole(lockFunctionId), StaticUtils.CheckRole(rolesFunctionId));
         }
-        private void deleteData(PostReq req)
+        private void DeleteData(PostReq req)
         {
             //var res = _dao.Delete(req);
             //ShowAlert(res.ErrorCode, res.Msg);
@@ -59,6 +67,24 @@ namespace Hospital.Admin.User
             //var json = JsonConvert.SerializeObject(res);
             //Response.Write(json);
             //Response.End();
+        }
+        private void LockUser(PostReq req)
+        {
+            var res = _dao.LockUser(req);
+            StaticUtils.SetAlert(res);
+            Response.ContentType = "text/plain";
+            var json = JsonConvert.SerializeObject(res);
+            Response.Write(json);
+            Response.End();
+        }
+        private void ResetPass(PostReq req)
+        {
+            var res = _dao.ResetPass(req);
+            StaticUtils.SetAlert(res);
+            Response.ContentType = "text/plain";
+            var json = JsonConvert.SerializeObject(res);
+            Response.Write(json);
+            Response.End();
         }
 
         private void Authenticate()

@@ -40,28 +40,39 @@ namespace DAL.BL.User
             return ExecuteDataset(sql);
         }
 
-        //public DataRow PopulatebyId(RegistrationDetails details)
-        //{
-        //    var sql = " EXEC UserSetup";
-        //    sql += "  @flag ='a'";
-        //    sql += ", @id = " + details.id.ToString();
-        //    return dao.ExecuteDataRow(sql);
-        //}
-        //public DbResult RegisterUser(RegistrationDetails details)
-        //{
-        //    var sql = " EXEC [UserSetup]";
-        //    sql += " @flag=" + (string.IsNullOrEmpty(details.id) ? "'i'" : "'u'");
-        //    //setting data to parameter
-        //    sql += ", @firstname = '" + details.firstname.ToString() + "'";
-        //    sql += ", @mobile = '" + details.mobile.ToString() + "'";
-        //    sql += ", @address = '" + details.address.ToString() + "'";
-        //    sql += ", @gender = '" + details.gender.ToString() + "'";
-        //    sql += ", @email = '" + details.email.ToString() + "'";
-        //    sql += ", @username = '" + details.username.ToString() + "'";
-        //    sql += ", @dob = '" + details.dob.ToString() + "'";
-        //    sql += ", @pass = '" + details.pass.ToString() + "'";
-        //    sql += ", @role_id = " + details.role.ToString();
-        //    return dao.ParseDbResult(sql);
-        //}
+        public DataRow PopulatebyId(string id)
+        {
+            var sql = " EXEC proc_user";
+            sql += "  @flag ='a'";
+            sql += ", @id = " + FilterString(id);
+            return ExecuteDataRow(sql);
+        }
+
+        public DbResult RegisterUser(RegistrationDetails details)
+        {
+            var sql = " EXEC proc_user";
+            sql += "  @flag=" + (details.id.Equals("0") ? "'i'" : "'u'");
+            sql += ", @fullname = " + FilterString(details.fullname);
+            sql += ", @email = " + FilterString(details.email);
+            sql += ", @username = " + FilterString(details.username);
+            sql += ", @userRole = " + FilterString(details.role);
+            return ParseDbResult(sql);
+        }
+
+        public DbResult ResetPass(PostReq req)
+        {
+            var sql = " EXEC proc_user";
+            sql += "  @flag ='reset-pass'";
+            sql += ", @id = " + FilterString(req.id);
+            return ParseDbResult(sql);
+        }
+
+        public DbResult LockUser(PostReq req)
+        {
+            var sql = " EXEC proc_user";
+            sql += "  @flag ='lock-user'";
+            sql += ", @id = " + FilterString(req.id);
+            return ParseDbResult(sql);
+        }
     }
 }

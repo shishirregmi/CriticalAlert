@@ -23,6 +23,7 @@ namespace DAL.Utilities
         }
         public static string CreateGridFunction(DataSet ds, string title, bool allowAdd, bool allowEdit, bool allowDelete, bool alllowApprove, bool allowView, string viewUrl, bool allowLock, bool allowRoleEdit)
         {
+            bool isLocked = false;
             if (ds != null)
             {
                 DataRow drow = ds.Tables[0].Rows[0];
@@ -65,6 +66,13 @@ namespace DAL.Utilities
                         int idx = 1;
                         foreach (DataRow dr in dt.Rows)
                         {
+                            if (dr.Table.Columns.Contains("isActive"))
+                            {
+                                if (dr["isActive"].ToString() == "N")
+                                    isLocked = true;
+                                else
+                                    isLocked = false;
+                            }
                             sb.AppendLine("<tr>");
                             sb.AppendLine("<th scope='row'>" + idx + "</td>");
                             foreach (var col in dr.ItemArray.Skip(1))
@@ -73,6 +81,7 @@ namespace DAL.Utilities
                             }
                             if (allowEdit || allowDelete || alllowApprove || allowView || allowLock || allowRoleEdit)
                             {
+
                                 sb.AppendLine("<td>");
                                 if (allowEdit)
                                     sb.AppendLine("<a title='Edit' href='Manage?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-pencil-alt fa-w-16 fa-1x'></i></a>");
@@ -86,8 +95,12 @@ namespace DAL.Utilities
                                 }
                                 if (alllowApprove)
                                     sb.AppendLine("&nbsp&nbsp<a title='Discharge' href='javascript:void(null)' onclick=\"DoAction('C','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-success\"><i class='fa fa-check fa-w-16 fa-1x'></i></a>");
-                                if (allowLock)
+                                if (allowLock && !isLocked)
                                     sb.AppendLine("&nbsp&nbsp<a title='Lock' href='javascript:void(null)' onclick=\"DoAction('L','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-lock fa-w-16 fa-1x'></i></a>");
+                                if (allowLock && isLocked)
+                                    sb.AppendLine("&nbsp&nbsp<a title='Unlock' href='javascript:void(null)' onclick=\"DoAction('L','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-success\"><i class='fa fa-lock fa-w-16 fa-1x'></i></a>");
+                                if (allowLock)
+                                    sb.AppendLine("&nbsp&nbsp<a title='Reset Password' href='javascript:void(null)' onclick=\"DoAction('R','" + dr["id"].ToString() + "');\" class=\"btn btn-sm btn-danger\"><i class='fa fa-key fa-w-16 fa-1x'></i></a>");
                                 if (allowRoleEdit)
                                     sb.AppendLine("&nbsp&nbsp<a title='Edit Roles' href='Roles?id=" + dr["id"] + "' class=\"btn btn-sm btn-info\" ><i class='fa fa-cogs fa-w-16 fa-1x'></i></a>");
                                 if (allowDelete)
